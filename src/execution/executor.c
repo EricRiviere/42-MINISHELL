@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char *find_path(t_command **cmd, t_env *env)
+static char *find_path(t_command **cmd, t_env *env)
 {
     t_env *curr = env;
     char *path = NULL;
@@ -20,7 +20,7 @@ char *find_path(t_command **cmd, t_env *env)
         ft_putstr_fd("minishell: PATH not set\n", 2);
         return NULL;
     }
-
+    printf("%s\n", path);
     return path;
 }
 //{
@@ -28,7 +28,7 @@ char *find_path(t_command **cmd, t_env *env)
 
 //}
 
-void exe_path(t_command **cmd, t_env *env)
+void execute_cmd(t_command **cmd, t_env *env)
 {
     char *path = find_path(cmd, env);
     char **paths = ft_split(path, ':');
