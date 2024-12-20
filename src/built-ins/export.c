@@ -25,10 +25,10 @@ void export_new_env(t_command **cmd, t_env *env)
                 j++;
             end = j;
             key = ft_strndup(&(*cmd)->args[i][start], (end - start));
-            printf("soy key------------------>*%s*\n", key);
+            if ((*cmd)->args[i][j] != '\0')
+                add_env_variable(&env, key, "");
         }
-        i++;
-         
+        i++; 
     } 
     
 }
