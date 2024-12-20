@@ -124,4 +124,5 @@ void preprocess_tokens(t_token **tkn_lst);
 void free_cmd_list(t_command **cmd_list);
 void execute_cmd(t_command **cmd, t_env *env);
 void export_new_env(t_command **cmd, t_env **env);
+void unset_env_var(t_command **cmd, t_env **env);
 #endif
