@@ -4,7 +4,7 @@ LSRC = ./src
 
 INCLUDE = .
 
-SRCS = $(LSRC)/parser/env.c $(LSRC)/parser/expansion.c $(LSRC)/execution/main.c $(LSRC)/syntax_manager/syntax.c $(LSRC)/parser/tokenize.c $(LSRC)/execution/utils.c $(LSRC)/parser/command.c $(LSRC)/execution/executor.c $(LSRC)/built-ins/builtin_parser.c $(LSRC)/built-ins/export.c $(LSRC)/built-ins/unset.c $(LSRC)/execution/heredoc.c $(LSRC)/test/print.c
+SRCS = $(LSRC)/parser/env.c $(LSRC)/parser/expansion.c $(LSRC)/execution/main.c $(LSRC)/syntax_manager/syntax.c $(LSRC)/parser/tokenize.c $(LSRC)/execution/utils.c $(LSRC)/parser/command.c $(LSRC)/execution/executor.c $(LSRC)/built-ins/builtin_parser.c $(LSRC)/built-ins/export.c $(LSRC)/built-ins/unset.c $(LSRC)/built-ins/ch_dir.c $(LSRC)/built-ins/pwd.c $(LSRC)/execution/heredoc.c $(LSRC)/test/print.c
 OBJS = $(SRCS:.c=.o)
 
 CC = cc

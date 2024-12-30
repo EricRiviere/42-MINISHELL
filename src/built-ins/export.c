@@ -20,6 +20,30 @@ t_env *get_var(t_env **env, char *key)
     return (NULL);
 }
 
+void add_env_variable_with_null(t_env **env_list, char *key)
+{
+    t_env   *new_node;
+    
+    new_node = malloc(sizeof(t_env));
+    if (!new_node)
+    {
+        free_env_list(*env_list);
+        perror("malloc error creating env node\n");
+        return ;
+    }
+    new_node->key = ft_strdup(key);
+    if (!new_node->key)
+    {
+        free(new_node);
+        perror("malloc error for env key\n");
+        return ;
+    }
+    new_node->value = NULL;
+    new_node->next = *env_list;
+    *env_list = new_node;
+}
+
+
 void    cu_env_var(t_env **env, char *key, char *value)
 {
     t_env *curr_node;
@@ -29,10 +53,16 @@ void    cu_env_var(t_env **env, char *key, char *value)
     {
         if (curr_node->value)
             free(curr_node->value);
-        curr_node->value = ft_strdup(value);
+        if (value)
+            curr_node->value = ft_strdup(value);
+        else
+            curr_node->value = NULL;
     }
     else
-        add_env_variable(env, key, value);
+        if (value)
+            add_env_variable(env, key, value);
+        else
+            add_env_variable_with_null(env, key);
 }
 
 void export_new_var(t_command **cmd, t_env **env)
@@ -59,17 +89,21 @@ void export_new_var(t_command **cmd, t_env **env)
             key = ft_strndup(&(*cmd)->args[i][start], (end - start));
             if ((*cmd)->args[i][j] == '=')
             {
-                value = ft_strdup(&(*cmd)->args[i][j + 1]);
-                cu_env_var(env, key, value);
+                if ((*cmd)->args[i][j + 1] != '\0')
+                {
+                    value = ft_strdup(&(*cmd)->args[i][j + 1]);
+                    cu_env_var(env, key, value);
+                    free(value);
+                }
+                else
+                    cu_env_var(env, key, "");
             }
             else
             {
                 if (!(curr_node = get_var(env, key)))
-                    cu_env_var(env, key, "");
+                    cu_env_var(env, key, NULL);
             }
             free(key);
-            if ((*cmd)->args[i][j] == '=')
-                free(value);
         }
         i++; 
     } 
