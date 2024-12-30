@@ -123,5 +123,14 @@ t_command **commands(t_token *tkn_lst);
 void preprocess_tokens(t_token **tkn_lst);
 void free_cmd_list(t_command **cmd_list);
 void execute_cmd(t_command **cmd, t_env *env);
-void export_new_env(t_command **cmd, t_env **env);
+//------------------ PRINT FUNCTIONS
+void print_commands(char *line, t_command **cmd_list);
+void print_tokens(char *line, t_token *tkn_lst);
+//------------------ HEREDOC
+void process_heredoc(t_token *heredoc_token);
+//------------------ BUILTINS
+void    manage_builtins(t_command **cmd, t_env **env);
+//------------------ EXPORT - UNSET FUNCTIONS
+void export_new_var(t_command **cmd, t_env **env);
+void delete_env_var(t_command **cmd, t_env **env);
 #endif
