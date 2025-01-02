@@ -61,6 +61,17 @@ void execute_cmd(t_command **cmd, t_env *env)
     status = 0;
     if ((*cmd)->cmd == NULL)
         return ;
+    
+    // if el num_cmd == 1 && is_builtins != 0
+        //manage_builtins
+        //status = 0;
+    //else if num_cmd > 1 && is_builtins != 0
+        //fork() -->
+        //manage_builtins
+        //status = 0;
+    //else
+        //execute
+
     new_arr = new_args(cmd);
     id = fork();
     if (id == -1)

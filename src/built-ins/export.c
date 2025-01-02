@@ -105,6 +105,7 @@ void export_new_var(t_command **cmd, int idx, t_env **env)
             }
             free(key);
         }
+        //else para imprimir error de argumento invalido: <<bash: export: `2': not a valid identifier>>
         i++; 
     } 
 }

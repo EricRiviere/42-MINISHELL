@@ -22,7 +22,6 @@ void change_dir(const char *path, t_env **env)
             ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
             return;
         }
-        printf("%s\n", path); // Imprimir OLDPWD en stdout
     }
     old_pwd = get_env_value("PWD", env_lst);// Guardamos el valor de PWD actual como OLDPWD
     if (chdir(path) == -1)// Cambiamos de directorio con chdir

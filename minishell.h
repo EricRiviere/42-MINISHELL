@@ -131,6 +131,7 @@ void print_tokens(char *line, t_token *tkn_lst);
 void process_heredoc(t_token *heredoc_token);
 //------------------ BUILTINS
 void    manage_builtins(t_command **cmd, t_env **env);
+int is_builtin(t_command *cmd);
 //------------------ EXPORT - UNSET FUNCTIONS
 t_env *get_var(t_env **env, char *key);
 void    cu_env_var(t_env **env, char *key, char *value);
@@ -140,4 +141,6 @@ void delete_env_var(t_command **cmd, int idx, t_env **env);
 void change_dir(const char *path, t_env **env);
 //------------------ PWD FUNCTION
 void    printf_pwd(t_env **env);
+//------------------ ECHO FUNCTION
+void get_echo(t_command **cmd);
 #endif
