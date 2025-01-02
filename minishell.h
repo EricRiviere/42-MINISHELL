@@ -9,6 +9,7 @@
 # include <unistd.h> // write
 # include "libft/libft.h"
 # include <fcntl.h>
+#include <sys/wait.h>
 
 //------------------ TOKEN TYPE ENUM
 typedef enum    s_type
@@ -133,8 +134,8 @@ void    manage_builtins(t_command **cmd, t_env **env);
 //------------------ EXPORT - UNSET FUNCTIONS
 t_env *get_var(t_env **env, char *key);
 void    cu_env_var(t_env **env, char *key, char *value);
-void export_new_var(t_command **cmd, t_env **env);
-void delete_env_var(t_command **cmd, t_env **env);
+void export_new_var(t_command **cmd, int idx, t_env **env);
+void delete_env_var(t_command **cmd, int idx, t_env **env);
 //------------------ CD FUNCTION
 void change_dir(const char *path, t_env **env);
 //------------------ PWD FUNCTION
