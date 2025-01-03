@@ -65,7 +65,7 @@ void    cu_env_var(t_env **env, char *key, char *value)
             add_env_variable_with_null(env, key);
 }
 
-void export_new_var(t_command **cmd, int idx, t_env **env)
+void export_new_var(t_command **cmd, t_env **env)
 {
     int i;
     int start;
@@ -77,21 +77,21 @@ void export_new_var(t_command **cmd, int idx, t_env **env)
 
     i = 0;
     end = 0;
-    while (cmd[idx]->args[i])
+    while ((*cmd)->args[i])
     {
         j = 0;
-        if (is_valid_key(cmd[idx]->args[i][j]))
+        if (is_valid_key((*cmd)->args[i][j]))
         {
             start = j;
-            while ((cmd[idx]->args[i][j] != '=') && cmd[idx]->args[i][j] != '\0')
+            while (((*cmd)->args[i][j] != '=') && (*cmd)->args[i][j] != '\0')
                 j++;
             end = j;
-            key = ft_strndup(&cmd[idx]->args[i][start], (end - start));
-            if (cmd[idx]->args[i][j] == '=')
+            key = ft_strndup(&(*cmd)->args[i][start], (end - start));
+            if ((*cmd)->args[i][j] == '=')
             {
-                if (cmd[idx]->args[i][j + 1] != '\0')
+                if ((*cmd)->args[i][j + 1] != '\0')
                 {
-                    value = ft_strdup(&cmd[idx]->args[i][j + 1]);
+                    value = ft_strdup(&(*cmd)->args[i][j + 1]);
                     cu_env_var(env, key, value);
                     free(value);
                 }
@@ -105,7 +105,8 @@ void export_new_var(t_command **cmd, int idx, t_env **env)
             }
             free(key);
         }
-        //else para imprimir error de argumento invalido: <<bash: export: `2': not a valid identifier>>
+        else
+            ft_putstr_fd("minishell: export: not a valid identifier\n", 2);
         i++; 
     } 
 }

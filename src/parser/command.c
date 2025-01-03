@@ -65,6 +65,8 @@ t_command *init_command()// Función para inicializar un comando
     cmd->cmd = NULL;
     cmd->args = args;
     cmd->redirections = redir;
+    cmd->fd_in = STDIN_FILENO;
+    cmd->fd_out = STDOUT_FILENO;
     redir->operator = operator;
     redir->file = file;
     return (cmd);
@@ -99,6 +101,79 @@ void manage_word_quote_cmd(t_command *cmd, t_token **curr_tkn, t_redir *redir, i
     *curr_tkn = (*curr_tkn)->next;
 }
 
+void close_fd_if_open(int *fd)
+{
+    if (*fd != STDIN_FILENO && *fd != STDOUT_FILENO && *fd >= 0)
+    {
+        close(*fd);
+        *fd = -1; // Opcional: marcar como cerrado
+    }
+}
+
+int process_input_fd(t_command *cmd, const char *file)
+{
+    int fd;
+
+    fd = open(file, O_RDONLY);
+    if (fd == -1)
+        return (perror(file), -1); // Error al abrir archivo
+    close_fd_if_open(&cmd->fd_in); // Cerramos el fd_in anterior
+    cmd->fd_in = fd;
+    return 0;
+}
+
+int process_output_fd(t_command *cmd, const char *file)
+{
+    int fd;
+
+    fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1)
+        return (perror(file), -1); // Error al abrir archivo
+    close_fd_if_open(&cmd->fd_out); // Cerramos el fd_out anterior
+    cmd->fd_out = fd;
+    return 0;
+}
+
+int process_append_fd(t_command *cmd, const char *file)
+{
+    int fd;
+
+    fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (fd == -1)
+        return (perror(file), -1); // Error al abrir archivo
+    close_fd_if_open(&cmd->fd_out); // Cerramos el fd_out anterior
+    cmd->fd_out = fd;
+    return 0;
+}
+
+int process_redirections(t_command *cmd, t_redir *redir)
+{
+    int i;
+
+    i = 0;
+    while (redir->operator[i])
+    {
+        if (ft_strncmp(redir->operator[i], ">>", 3) == 0)
+        {
+            if (process_append_fd(cmd, redir->file[i]) == -1)
+                return -1;
+        }
+        else if (ft_strncmp(redir->operator[i], "<", 2) == 0)
+        {
+            if (process_input_fd(cmd, redir->file[i]) == -1)
+                return -1;
+        }
+        else if (ft_strncmp(redir->operator[i], ">", 2) == 0)
+        {
+            if (process_output_fd(cmd, redir->file[i]) == -1)
+                return -1;
+        }
+        i++;
+    }
+    return 0;
+}
+
+
 // Función para procesar tokens y llenar un comando
 void process_tokens(t_command *cmd, t_redir *redir, t_token **curr_tkn)
 {
@@ -116,9 +191,12 @@ void process_tokens(t_command *cmd, t_redir *redir, t_token **curr_tkn)
         else
             *curr_tkn = (*curr_tkn)->next;
     }
-    cmd->args[arg_index] = NULL;// Finalizar listas
+    cmd->args[arg_index] = NULL; // Finalizar listas de argumentos y redirecciones
     redir->operator[op_index] = NULL;
     redir->file[op_index] = NULL;
+    if (process_redirections(cmd, redir) == -1)// Procesar redirección y cerrar fds abiertos si es necesario
+        return;
+    //*** HAY que modificar para pasar a commands algo que luego en el main indique que no tiene que ejecutar nada */
 }
 
 t_command   **commands(t_token *tkn_lst)//Funcion principal
@@ -141,7 +219,7 @@ t_command   **commands(t_token *tkn_lst)//Funcion principal
             free(cmd_list);
             return (NULL);
         }
-        process_tokens(cmd, cmd->redirections, &curr_tkn);
+        process_tokens(cmd, cmd->redirections, &curr_tkn); //Aqui gestionar para que si falla un input no procese nada
         cmd_list[cmd_index++] = cmd;
         if (curr_tkn && curr_tkn->type == 2 && ft_strncmp(curr_tkn->value, "|", 1) == 0)
             curr_tkn = curr_tkn->next;
@@ -181,6 +259,10 @@ void free_cmd_list(t_command **cmd_list)
         free(cmd->args);
         if (cmd->redirections)
             free_redir(cmd->redirections);// Liberar redirecciones
+        if (cmd->fd_in != STDIN_FILENO) // Cerrar fd_in personalizado
+            close(cmd->fd_in);
+        if (cmd->fd_out != STDOUT_FILENO) // Cerrar fd_out personalizado
+            close(cmd->fd_out);
         free(cmd->cmd);// Liberar comando principal
         free(cmd);// Liberar el comando completo
         i++;

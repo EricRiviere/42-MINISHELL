@@ -72,7 +72,7 @@ void manage_export(t_command **cmd, int i, t_env **env)
     if (!cmd[0]->args[0])
         print_declared_env(env); // Impresion con export
     else
-        export_new_var(cmd, i, env);
+        export_new_var(cmd, env);
 }
 
 void    manage_builtins(t_command **cmd, t_env **env)
@@ -90,7 +90,7 @@ void    manage_builtins(t_command **cmd, t_env **env)
         else if (is_builtin(cmd[i]) == 3)//EXPORT
             manage_export(cmd, i, env);
         else if (is_builtin(cmd[i]) == 4)//UNSET
-            delete_env_var(cmd, i, env);
+            delete_env_var(cmd, env);
         else if (is_builtin(cmd[i]) == 5)//PWD 
             printf_pwd(env);
         else if (is_builtin(cmd[i]) == 6)//EXIT

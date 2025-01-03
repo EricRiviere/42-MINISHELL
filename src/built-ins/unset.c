@@ -1,20 +1,20 @@
 #include "minishell.h"
 
-void delete_env_var(t_command **cmd, int idx, t_env **env)
+void delete_env_var(t_command **cmd, t_env **env)
 {
     int i;
     t_env *curr_node;
     t_env *temp;
 
     i = 0;
-    while (cmd[idx]->args[i])
+    while ((*cmd)->args[i])
     {
         curr_node = *env;
         temp = NULL;
         while (curr_node)
         {
-            if (ft_strncmp(cmd[idx]->args[i], curr_node->key, ft_strlen(cmd[idx]->args[i])) == 0 &&
-                ft_strlen(cmd[idx]->args[i]) == ft_strlen(curr_node->key))
+            if (ft_strncmp((*cmd)->args[i], curr_node->key, ft_strlen((*cmd)->args[i])) == 0 &&
+                ft_strlen((*cmd)->args[i]) == ft_strlen(curr_node->key))
             {
                 if (temp == NULL)// Caso especial: eliminar la cabeza de la lista
                     *env = curr_node->next;

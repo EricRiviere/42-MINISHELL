@@ -48,7 +48,9 @@ void print_commands(char *line, t_command **cmd_list)
         {
             printf("    (none)\n");
         }
-
+        printf("  File descriptors:\n");
+        printf("    Input fd: %d\n", curr_cmd->fd_in);
+        printf("    Output fd: %d\n", curr_cmd->fd_out);
         printf("\n");
         i++;
     }

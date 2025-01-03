@@ -73,6 +73,8 @@ typedef struct s_command
     char    *cmd;
     char    **args;
     t_redir *redirections;
+    int     fd_in;
+    int     fd_out;
 }   t_command;
 //------------------
 //------------------ EXPAND ARGUMENTS STRUCT
@@ -135,8 +137,8 @@ int is_builtin(t_command *cmd);
 //------------------ EXPORT - UNSET FUNCTIONS
 t_env *get_var(t_env **env, char *key);
 void    cu_env_var(t_env **env, char *key, char *value);
-void export_new_var(t_command **cmd, int idx, t_env **env);
-void delete_env_var(t_command **cmd, int idx, t_env **env);
+void export_new_var(t_command **cmd, t_env **env);
+void delete_env_var(t_command **cmd, t_env **env);
 //------------------ CD FUNCTION
 void change_dir(const char *path, t_env **env);
 //------------------ PWD FUNCTION
