@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static char *find_path(t_command **cmd, t_env *env)
+static char *find_path(t_env *env)
 {
     t_env *curr = env;
     char *path = NULL;
@@ -50,7 +50,21 @@ char **new_args(t_command **cmd)
     new_arr[i] = NULL;
     return (new_arr);
 }
-void execute_cmd(t_command **cmd, t_env *env)
+
+void free_array(char **arr)
+{
+    int i;
+    
+    i = 0;
+    while (arr && arr[i])
+    {
+        free(arr[i]);
+        i++;
+    }
+    free(arr);
+}
+
+void execute_cmd(t_command **cmd, t_env **env)
 {
     int id;
     int status;
@@ -59,6 +73,8 @@ void execute_cmd(t_command **cmd, t_env *env)
 
     id = 0;
     status = 0;
+    if (cmd == NULL)
+        return ;
     if ((*cmd)->cmd == NULL)
         return ;
     
@@ -71,49 +87,61 @@ void execute_cmd(t_command **cmd, t_env *env)
         //status = 0;
     //else
         //execute
-
-    new_arr = new_args(cmd);
-    id = fork();
-    if (id == -1)
-    {
-        perror("fork");
-        return ;
-    }
-    if (id == 0)
-    {
-        if ((*cmd)->cmd[0] == '/')
-        {
-            if (access((*cmd)->cmd, F_OK | X_OK | R_OK) == 0)
-                execve((*cmd)->cmd, new_arr, NULL);
-            else
-            {
-                ft_putstr_fd("command not found : ", 2);
-                ft_putstr_fd((*cmd)->cmd, 2);
-                ft_putstr_fd("\n", 2);
-            }
-            exit(127) ;
-        }
-        char *path = find_path(cmd, env);
-        char **paths = ft_split(path, ':');
-        i = 0;
-        while (paths[i])
-        {
-            char *full_path = ft_strjoin(paths[i], "/");
-            full_path = ft_strjoin(full_path, (*cmd)->cmd);
-            if (access(full_path, F_OK | X_OK | R_OK) == 0)
-            {
-                execve(full_path, new_arr, NULL);
-                free(full_path);
-                break;
-            }
-            free(full_path);
-            i++;
-        }
-        ft_putstr_fd("command not found : ", 2);
-        ft_putstr_fd((*cmd)->cmd, 2);
-        ft_putstr_fd("\n", 2);
-        exit(127);
-    }
+    if (is_builtin(*cmd) != 0)
+        manage_builtins(cmd, env);
     else
-        waitpid(id, &status, 0);
+    {
+        new_arr = new_args(cmd);
+        id = fork();
+        if (id == -1)
+        {
+            perror("fork");
+            free_array(new_arr);
+            return ;
+        }
+        if (id == 0)
+        {
+            if ((*cmd)->cmd[0] == '/')
+            {
+                if (access((*cmd)->cmd, F_OK | X_OK | R_OK) == 0)
+                    execve((*cmd)->cmd, new_arr, NULL);
+                else
+                {
+                    ft_putstr_fd("command not found : ", 2);
+                    ft_putstr_fd((*cmd)->cmd, 2);
+                    ft_putstr_fd("\n", 2);
+                }
+                free_array(new_arr);
+                exit(127) ;
+            }
+            char *path = find_path(*env);
+            char **paths = ft_split(path, ':');
+            i = 0;
+            while (paths[i])
+            {
+                char *tmp =  ft_strjoin(paths[i], "/");
+                char *full_path = ft_strjoin(tmp, (*cmd)->cmd);
+                if  (tmp)
+                    free(tmp);
+                if (access(full_path, F_OK | X_OK | R_OK) == 0)
+                {
+                    execve(full_path, new_arr, NULL);
+                    free(full_path);
+                    break;
+                }
+                free(full_path);
+                i++;
+            }
+            ft_putstr_fd("command not found : ", 2);
+            ft_putstr_fd((*cmd)->cmd, 2);
+            ft_putstr_fd("\n", 2);
+            free_array(new_arr);
+            exit(127);
+        }
+        else
+        {
+            waitpid(id, &status, 0);
+            free_array(new_arr);
+        }
+    }
 }

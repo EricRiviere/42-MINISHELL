@@ -73,6 +73,7 @@ typedef struct s_command
     char    *cmd;
     char    **args;
     t_redir *redirections;
+    int     redir_error;
     int     fd_in;
     int     fd_out;
 }   t_command;
@@ -125,7 +126,7 @@ void expand_variables(t_token *token, t_env *env_lst);
 t_command **commands(t_token *tkn_lst);
 void preprocess_tokens(t_token **tkn_lst);
 void free_cmd_list(t_command **cmd_list);
-void execute_cmd(t_command **cmd, t_env *env);
+void execute_cmd(t_command **cmd, t_env **env);
 //------------------ PRINT FUNCTIONS
 void print_commands(char *line, t_command **cmd_list);
 void print_tokens(char *line, t_token *tkn_lst);

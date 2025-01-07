@@ -6,6 +6,7 @@ int main(int argc, char **argv, char **env)
     t_token *tkn_lst;
     t_token *curr_tkn;
     t_env   *env_lst;
+    t_command **cmd_list;
 
     (void)argv;
     if (argc != 1)
@@ -49,9 +50,8 @@ int main(int argc, char **argv, char **env)
             if (tkn_lst)
             {
                 preprocess_tokens(&tkn_lst);
-                t_command **cmd_list = commands(tkn_lst);
-                manage_builtins(cmd_list, &env_lst);
-                execute_cmd(cmd_list, env_lst);
+                cmd_list = commands(tkn_lst);
+                execute_cmd(cmd_list, &env_lst);
                 print_commands(line, cmd_list);
                 //print_tokens(line, tkn_lst);
                 free_cmd_list(cmd_list);

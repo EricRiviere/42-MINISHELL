@@ -67,7 +67,7 @@ void manage_cd(t_command **cmd, t_env **env)
         change_dir(cmd[0]->args[0], env);
 }
 
-void manage_export(t_command **cmd, int i, t_env **env)
+void manage_export(t_command **cmd, t_env **env)
 {
     if (!cmd[0]->args[0])
         print_declared_env(env); // Impresion con export
@@ -88,7 +88,7 @@ void    manage_builtins(t_command **cmd, t_env **env)
         else if (is_builtin(cmd[i]) == 2)//CD
             manage_cd(cmd, env);
         else if (is_builtin(cmd[i]) == 3)//EXPORT
-            manage_export(cmd, i, env);
+            manage_export(cmd, env);
         else if (is_builtin(cmd[i]) == 4)//UNSET
             delete_env_var(cmd, env);
         else if (is_builtin(cmd[i]) == 5)//PWD 

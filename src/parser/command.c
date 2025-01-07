@@ -89,7 +89,7 @@ void manage_redirection_cmd(t_token **curr_tkn, t_redir *redir, int *op_index)
 }
 
 // Funcion manejo words y quotes
-void manage_word_quote_cmd(t_command *cmd, t_token **curr_tkn, t_redir *redir, int *arg_index)
+void manage_word_quote_cmd(t_command *cmd, t_token **curr_tkn, int *arg_index)
 {
     if ((*curr_tkn)->value)
     {
@@ -187,7 +187,7 @@ void process_tokens(t_command *cmd, t_redir *redir, t_token **curr_tkn)
         if ((*curr_tkn)->type == 2 && (*curr_tkn)->next) // Redirección
             manage_redirection_cmd(curr_tkn, redir, &op_index);
         else if ((*curr_tkn)->type == 0 || (*curr_tkn)->type == 1) // Word o Quote
-            manage_word_quote_cmd(cmd, curr_tkn, redir, &arg_index);
+            manage_word_quote_cmd(cmd, curr_tkn, &arg_index);
         else
             *curr_tkn = (*curr_tkn)->next;
     }
@@ -195,9 +195,48 @@ void process_tokens(t_command *cmd, t_redir *redir, t_token **curr_tkn)
     redir->operator[op_index] = NULL;
     redir->file[op_index] = NULL;
     if (process_redirections(cmd, redir) == -1)// Procesar redirección y cerrar fds abiertos si es necesario
+    {
+        cmd->redir_error = 1;
         return;
-    //*** HAY que modificar para pasar a commands algo que luego en el main indique que no tiene que ejecutar nada */
+    }
+    cmd->redir_error = 0;
 }
+
+void    free_redir(t_redir *redir)
+{
+    int j;
+
+    j = 0;
+    while (redir->operator[j])
+        free(redir->operator[j++]);
+    free(redir->operator);
+    j = 0;
+    while (redir->file[j])
+        free(redir->file[j++]);
+    free(redir->file);
+    free(redir); // Liberar la estructura redirección
+}
+
+void free_single_cmd(t_command *cmd)
+{
+    int j;
+
+    if (!cmd)
+        return;
+    j = 0;
+    while (cmd->args && cmd->args[j])
+        free(cmd->args[j++]);
+    free(cmd->args);
+    if (cmd->redirections)
+        free_redir(cmd->redirections);
+    if (cmd->fd_in != STDIN_FILENO)
+        close(cmd->fd_in);
+    if (cmd->fd_out != STDOUT_FILENO)
+        close(cmd->fd_out);
+    free(cmd->cmd);
+    free(cmd);
+}
+
 
 t_command   **commands(t_token *tkn_lst)//Funcion principal
 {
@@ -219,7 +258,14 @@ t_command   **commands(t_token *tkn_lst)//Funcion principal
             free(cmd_list);
             return (NULL);
         }
-        process_tokens(cmd, cmd->redirections, &curr_tkn); //Aqui gestionar para que si falla un input no procese nada
+        process_tokens(cmd, cmd->redirections, &curr_tkn);
+        if (cmd->redir_error)
+        {
+            free_single_cmd(cmd);
+            if (cmd_list)
+                free(cmd_list);
+            return (NULL);
+        }
         cmd_list[cmd_index++] = cmd;
         if (curr_tkn && curr_tkn->type == 2 && ft_strncmp(curr_tkn->value, "|", 1) == 0)
             curr_tkn = curr_tkn->next;
@@ -228,28 +274,16 @@ t_command   **commands(t_token *tkn_lst)//Funcion principal
     return (cmd_list);
 }
 
-void    free_redir(t_redir *redir)
-{
-    int j;
-
-    j = 0;
-    while (redir->operator[j])
-        free(redir->operator[j++]);
-    free(redir->operator);
-    j = 0;
-    while (redir->file[j])
-        free(redir->file[j++]);
-    free(redir->file);
-    free(redir); // Liberar la estructura redirección
-}
-
 void free_cmd_list(t_command **cmd_list)
 {
     int i;
     int j;
     t_command *cmd;
 
+    if (!cmd_list)
+        return;
     i = 0;
+
     while (cmd_list[i])
     {
         cmd = cmd_list[i];
