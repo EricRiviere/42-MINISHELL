@@ -98,5 +98,5 @@ void    manage_builtins(t_command **cmd, t_env **env)
         else if (is_builtin(cmd[i]) == 7)//ECHO
             get_echo(&cmd[i]);
         i++;
-    }
+    }  
 }
