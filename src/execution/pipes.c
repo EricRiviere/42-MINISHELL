@@ -10,8 +10,13 @@ void   manage_pipes(t_command **cmd, t_env **env)
     {
         id[j] = fork();
         // proteger
-        // if ()
-        // else ()
+        // if () hijos 
+        // execut comandos en bucle 1x1
+        // dup2 procesos a salidas del pipe
+        // ultimo comand -> STANDAR OUTPUT
+        // else () padre
+        // wait status 
+        // ls | cat | wc -l 
     }
     
 }
