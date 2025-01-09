@@ -65,8 +65,8 @@ t_command *init_command()// Función para inicializar un comando
     cmd->cmd = NULL;
     cmd->args = args;
     cmd->redirections = redir;
-    cmd->fd_in = STDIN_FILENO;
-    cmd->fd_out = STDOUT_FILENO;
+    cmd->fd_in = -1;
+    cmd->fd_out = -1;
     redir->operator = operator;
     redir->file = file;
     return (cmd);
@@ -103,11 +103,8 @@ void manage_word_quote_cmd(t_command *cmd, t_token **curr_tkn, int *arg_index)
 
 void close_fd_if_open(int *fd)
 {
-    if (*fd != STDIN_FILENO && *fd != STDOUT_FILENO && *fd >= 0)
-    {
+    if (*fd != -1)
         close(*fd);
-        *fd = -1; // Opcional: marcar como cerrado
-    }
 }
 
 int process_input_fd(t_command *cmd, const char *file)
@@ -119,6 +116,11 @@ int process_input_fd(t_command *cmd, const char *file)
         return (perror(file), -1); // Error al abrir archivo
     close_fd_if_open(&cmd->fd_in); // Cerramos el fd_in anterior
     cmd->fd_in = fd;
+    if (dup2(cmd->fd_in, STDIN_FILENO) == -1)
+    {
+        perror("dup");
+        exit(EXIT_FAILURE);
+    }
     return 0;
 }
 
@@ -131,6 +133,11 @@ int process_output_fd(t_command *cmd, const char *file)
         return (perror(file), -1); // Error al abrir archivo
     close_fd_if_open(&cmd->fd_out); // Cerramos el fd_out anterior
     cmd->fd_out = fd;
+    if (dup2(cmd->fd_out, STDOUT_FILENO) == -1)
+    {
+        perror("dup");
+        exit(EXIT_FAILURE);
+    }
     return 0;
 }
 
@@ -143,6 +150,11 @@ int process_append_fd(t_command *cmd, const char *file)
         return (perror(file), -1); // Error al abrir archivo
     close_fd_if_open(&cmd->fd_out); // Cerramos el fd_out anterior
     cmd->fd_out = fd;
+    if (dup2(cmd->fd_out, STDOUT_FILENO) == -1)
+    {
+        perror("dup");
+        exit(EXIT_FAILURE);
+    }
     return 0;
 }
 
@@ -229,9 +241,9 @@ void free_single_cmd(t_command *cmd)
     free(cmd->args);
     if (cmd->redirections)
         free_redir(cmd->redirections);
-    if (cmd->fd_in != STDIN_FILENO)
+    if (cmd->fd_in != -1)
         close(cmd->fd_in);
-    if (cmd->fd_out != STDOUT_FILENO)
+    if (cmd->fd_out != -1)
         close(cmd->fd_out);
     free(cmd->cmd);
     free(cmd);
@@ -293,9 +305,9 @@ void free_cmd_list(t_command **cmd_list)
         free(cmd->args);
         if (cmd->redirections)
             free_redir(cmd->redirections);// Liberar redirecciones
-        if (cmd->fd_in != STDIN_FILENO) // Cerrar fd_in personalizado
+        if (cmd->fd_in != -1) // Cerrar fd_in personalizado
             close(cmd->fd_in);
-        if (cmd->fd_out != STDOUT_FILENO) // Cerrar fd_out personalizado
+        if (cmd->fd_out != -1) // Cerrar fd_out personalizado
             close(cmd->fd_out);
         free(cmd->cmd);// Liberar comando principal
         free(cmd);// Liberar el comando completo

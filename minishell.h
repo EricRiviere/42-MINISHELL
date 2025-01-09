@@ -146,4 +146,5 @@ void change_dir(const char *path, t_env **env);
 void    printf_pwd(t_env **env);
 //------------------ ECHO FUNCTION
 void get_echo(t_command **cmd);
+int get_cmd_num(t_command **cmd);
 #endif

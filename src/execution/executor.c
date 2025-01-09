@@ -64,12 +64,31 @@ void free_array(char **arr)
     free(arr);
 }
 
+int get_cmd_num(t_command **cmd)
+{
+    int num;
+    int idx;
+    num = 0;
+    idx = 0;
+    if (cmd == NULL)
+        return (num);
+    if ((*cmd)->cmd == NULL)
+        return (num);
+    while (cmd[idx] != NULL)
+    {
+        num++;
+        idx++;
+    }
+    return (num);
+}
+
 void execute_cmd(t_command **cmd, t_env **env)
 {
     int id;
     int status;
     char **new_arr;
     int i;
+    int cmd_num = get_cmd_num(cmd);
 
     id = 0;
     status = 0;
@@ -77,18 +96,12 @@ void execute_cmd(t_command **cmd, t_env **env)
         return ;
     if ((*cmd)->cmd == NULL)
         return ;
-    
-    // if el num_cmd == 1 && is_builtins != 0
-        //manage_builtins
-        //status = 0;
-    //else if num_cmd > 1 && is_builtins != 0
-        //fork() -->
-        //manage_builtins
-        //status = 0;
-    //else
-        //execute
-    if (is_builtin(*cmd) != 0)
+    if (cmd_num == 1 && is_builtin(*cmd) != 0)
+    {
         manage_builtins(cmd, env);
+        if ((*cmd)->fd_out != -1)
+            close((*cmd)->fd_out);
+    }
     else
     {
         new_arr = new_args(cmd);
@@ -143,5 +156,18 @@ void execute_cmd(t_command **cmd, t_env **env)
             waitpid(id, &status, 0);
             free_array(new_arr);
         }
+    }
+    // reset terminal file 
+    int term_out = 0;
+    int term_in = 0;
+    if (dup2(term_out, STDOUT_FILENO) == -1)
+    {
+        perror("dup");
+        exit(EXIT_FAILURE);
+    }
+    if (dup2(term_in, STDIN_FILENO) == -1)
+    {
+        perror("dup");
+        exit(EXIT_FAILURE);
     }
 }
