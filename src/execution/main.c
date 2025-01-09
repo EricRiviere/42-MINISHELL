@@ -51,7 +51,8 @@ int main(int argc, char **argv, char **env)
             {
                 preprocess_tokens(&tkn_lst);
                 cmd_list = commands(tkn_lst);
-                execute_cmd(cmd_list, &env_lst);
+                execute_pipes(cmd_list, &env_lst);
+                // execute_cmd(cmd_list, &env_lst);
                 print_commands(line, cmd_list);
                 //print_tokens(line, tkn_lst);
                 free_cmd_list(cmd_list);

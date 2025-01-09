@@ -180,6 +180,10 @@ int process_redirections(t_command *cmd, t_redir *redir)
             if (process_output_fd(cmd, redir->file[i]) == -1)
                 return -1;
         }
+        // else
+        // {
+        //     cmd->fd_in = STDIN_FILENO;
+        // }
         i++;
     }
     return 0;

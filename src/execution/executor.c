@@ -98,7 +98,8 @@ void execute_cmd(t_command **cmd, t_env **env)
         return ;
     if (cmd_num == 1 && is_builtin(*cmd) != 0)
     {
-        manage_builtins(cmd, env);
+        // manage_builtins(cmd, env);
+        manage_builtins(*cmd, env);
         if ((*cmd)->fd_out != -1)
             close((*cmd)->fd_out);
     }
@@ -157,7 +158,7 @@ void execute_cmd(t_command **cmd, t_env **env)
             free_array(new_arr);
         }
     }
-    // reset terminal file 
+    //reset terminal file 
     int term_out = 0;
     int term_in = 0;
     if (dup2(term_out, STDOUT_FILENO) == -1)

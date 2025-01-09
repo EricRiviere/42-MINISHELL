@@ -57,46 +57,40 @@ int is_builtin(t_command *cmd)
         return (0);
 }
 
-void manage_cd(t_command **cmd, t_env **env)
+void manage_cd(t_command *cmd, t_env **env)
 {
-    if (!cmd[0]->args || !cmd[0]->args[0])
+    if (!cmd->args || !cmd->args[0])
         change_dir(NULL, env);
-    else if (cmd[0]->args[1])
+    else if (cmd->args[1])
         ft_putstr_fd("minishell: cd: too many arguments", 2);
     else
-        change_dir(cmd[0]->args[0], env);
+        change_dir(cmd->args[0], env);
 }
 
-void manage_export(t_command **cmd, t_env **env)
+void manage_export(t_command *cmd, t_env **env)
 {
-    if (!cmd[0]->args[0])
+    if (!cmd->args[0])
         print_declared_env(env); // Impresion con export
     else
-        export_new_var(cmd, env);
+        export_new_var(&cmd, env);
 }
 
-void    manage_builtins(t_command **cmd, t_env **env)
+void    manage_builtins(t_command *cmd, t_env **env)
 {
-    int i = 0;
-
-    while (cmd[i])
-    {
-        if (&cmd[i]->cmd[0] == NULL)
-            return ;
-        else if (is_builtin(cmd[i]) == 1)//ENV
-            print_enviroment(env);
-        else if (is_builtin(cmd[i]) == 2)//CD
-            manage_cd(cmd, env);
-        else if (is_builtin(cmd[i]) == 3)//EXPORT
-            manage_export(cmd, env);
-        else if (is_builtin(cmd[i]) == 4)//UNSET
-            delete_env_var(cmd, env);
-        else if (is_builtin(cmd[i]) == 5)//PWD 
-            printf_pwd(env);
-        else if (is_builtin(cmd[i]) == 6)//EXIT
-            exit(0);
-        else if (is_builtin(cmd[i]) == 7)//ECHO
-            get_echo(&cmd[i]);
-        i++;
-    }
+    if (&cmd->cmd[0] == NULL)
+        return ;
+    else if (is_builtin(cmd) == 1)//ENV
+        print_enviroment(env);
+    else if (is_builtin(cmd) == 2)//CD
+        manage_cd(cmd, env);
+    else if (is_builtin(cmd) == 3)//EXPORT
+        manage_export(cmd, env);
+    else if (is_builtin(cmd) == 4)//UNSET
+        delete_env_var(&cmd, env);
+    else if (is_builtin(cmd) == 5)//PWD 
+        printf_pwd(env);
+    else if (is_builtin(cmd) == 6)//EXIT
+        exit(0);
+    else if (is_builtin(cmd) == 7)//ECHO
+        get_echo(&cmd);
 }
