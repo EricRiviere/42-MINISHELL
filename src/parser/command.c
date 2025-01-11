@@ -114,13 +114,14 @@ int process_input_fd(t_command *cmd, const char *file)
     fd = open(file, O_RDONLY);
     if (fd == -1)
         return (perror(file), -1); // Error al abrir archivo
-    close_fd_if_open(&cmd->fd_in); // Cerramos el fd_in anterior
+    //close_fd_if_open(&cmd->fd_in); // Cerramos el fd_in anterior
     cmd->fd_in = fd;
     if (dup2(cmd->fd_in, STDIN_FILENO) == -1)
     {
         perror("dup");
         exit(EXIT_FAILURE);
     }
+    close (fd);
     return 0;
 }
 
