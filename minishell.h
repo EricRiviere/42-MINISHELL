@@ -9,7 +9,8 @@
 # include <unistd.h> // write
 # include "libft/libft.h"
 # include <fcntl.h>
-
+#include <sys/wait.h>
+#include <string.h>
 //------------------ TOKEN TYPE ENUM
 typedef enum    s_type
 {
@@ -72,6 +73,9 @@ typedef struct s_command
     char    *cmd;
     char    **args;
     t_redir *redirections;
+    int     redir_error;
+    int     fd_in;
+    int     fd_out;
 }   t_command;
 //------------------
 //------------------ EXPAND ARGUMENTS STRUCT
@@ -118,8 +122,30 @@ int is_valid_env_char(char c);
 char *expand_value(t_token *token, t_env *env_lst);
 void expand_variables(t_token *token, t_env *env_lst);
 //------------------ COMMAND FUNCTIONS
-//void    commands(t_token *tkn_lst);
 t_command **commands(t_token *tkn_lst);
 void preprocess_tokens(t_token **tkn_lst);
 void free_cmd_list(t_command **cmd_list);
+void execute_cmd(t_command **cmd, t_env **env);
+//------------------ PRINT FUNCTIONS
+void print_commands(char *line, t_command **cmd_list);
+void print_tokens(char *line, t_token *tkn_lst);
+//------------------ HEREDOC
+int process_heredoc(t_token *heredoc_token);
+//------------------ BUILTINS
+void    manage_builtins(t_command *cmd, t_env **env);
+int is_builtin(t_command *cmd);
+//------------------ EXPORT - UNSET FUNCTIONS
+t_env *get_var(t_env **env, char *key);
+void    cu_env_var(t_env **env, char *key, char *value);
+void export_new_var(t_command **cmd, t_env **env);
+void delete_env_var(t_command **cmd, t_env **env);
+//------------------ CD FUNCTION
+void change_dir(const char *path, t_env **env);
+//------------------ PWD FUNCTION
+void    printf_pwd(t_env **env);
+//------------------ ECHO FUNCTION
+void get_echo(t_command **cmd);
+int get_cmd_num(t_command **cmd);
+//------------------ PIPES
+void execute_pipes(t_command **cmds, t_env **env);
 #endif

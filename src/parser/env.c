@@ -92,7 +92,7 @@ char    *get_env_value(char *str, t_env *env_list)
 {
     while (env_list)
     {
-        if (ft_strncmp(str, env_list->key, ft_strlen(str)) == 0)  
+        if (ft_strncmp(str, env_list->key, ft_strlen(str)) == 0 && ft_strlen(str) == ft_strlen(env_list->key))  
             return (env_list->value);
         env_list = env_list->next;
     }
