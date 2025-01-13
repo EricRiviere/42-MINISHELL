@@ -1,5 +1,20 @@
 #include "minishell.h"
 
+int is_unique_builtin(t_command *cmd)
+{
+    if (ft_strncmp(&cmd->cmd[0], "cd", -1) == 0)
+        return (2);
+    else if (ft_strncmp(&cmd->cmd[0], "export", -1) == 0)
+        return (3);
+    else if (ft_strncmp(&cmd->cmd[0], "unset", -1) == 0)
+        return (4);
+    else if (ft_strncmp(&cmd->cmd[0], "exit", -1) == 0)
+        return (6);
+    else
+        return (0);
+}
+
+
 void execute_pipes(t_command **cmds, t_env **env)
 {
     int i;
@@ -11,6 +26,12 @@ void execute_pipes(t_command **cmds, t_env **env)
     cmd_num = get_cmd_num(cmds);
     if (cmd_num <= 0 || cmds == NULL)
         return;
+
+    if (cmd_num == 1 && is_unique_builtin(cmds[0]))
+    {
+        execute_cmd(&cmds[0], env);
+        return ;
+    }
 
     for (i = 0; i < cmd_num; i++)
     {

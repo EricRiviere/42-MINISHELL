@@ -76,6 +76,9 @@ t_command *init_command()// Función para inicializar un comando
 void add_redirection(t_redir *redir, t_token *curr_tkn, int *op_index)
 {
     redir->operator[*op_index] = ft_strdup(curr_tkn->value);
+    if (curr_tkn->hd_fd != 1)
+        redir->file[*op_index] = ft_itoa(curr_tkn->hd_fd);
+    else
     redir->file[*op_index] = ft_strdup(curr_tkn->next->value);
     (*op_index)++;
 }
@@ -116,11 +119,6 @@ int process_input_fd(t_command *cmd, const char *file)
         return (perror(file), -1); // Error al abrir archivo
     close_fd_if_open(&cmd->fd_in); // Cerramos el fd_in anterior
     cmd->fd_in = fd;
-    // if (dup2(cmd->fd_in, STDIN_FILENO) == -1)
-    // {
-    //     perror("dup");
-    //     exit(EXIT_FAILURE);
-    // }
     return 0;
 }
 
@@ -133,11 +131,6 @@ int process_output_fd(t_command *cmd, const char *file)
         return (perror(file), -1); // Error al abrir archivo
     close_fd_if_open(&cmd->fd_out); // Cerramos el fd_out anterior
     cmd->fd_out = fd;
-    // if (dup2(cmd->fd_out, STDOUT_FILENO) == -1)
-    // {
-    //     perror("dup");
-    //     exit(EXIT_FAILURE);
-    // }
     return 0;
 }
 
@@ -150,11 +143,6 @@ int process_append_fd(t_command *cmd, const char *file)
         return (perror(file), -1); // Error al abrir archivo
     close_fd_if_open(&cmd->fd_out); // Cerramos el fd_out anterior
     cmd->fd_out = fd;
-    // if (dup2(cmd->fd_out, STDOUT_FILENO) == -1)
-    // {
-    //     perror("dup");
-    //     exit(EXIT_FAILURE);
-    // }
     return 0;
 }
 
@@ -170,6 +158,10 @@ int process_redirections(t_command *cmd, t_redir *redir)
             if (process_append_fd(cmd, redir->file[i]) == -1)
                 return -1;
         }
+        else if (ft_strncmp(redir->operator[i], "<<", 3) == 0)
+        {
+            cmd->fd_in = ft_atoi(redir->file[i]);
+        }
         else if (ft_strncmp(redir->operator[i], "<", 2) == 0)
         {
             if (process_input_fd(cmd, redir->file[i]) == -1)
@@ -180,10 +172,6 @@ int process_redirections(t_command *cmd, t_redir *redir)
             if (process_output_fd(cmd, redir->file[i]) == -1)
                 return -1;
         }
-        // else
-        // {
-        //     cmd->fd_in = STDIN_FILENO;
-        // }
         i++;
     }
     return 0;
@@ -275,13 +263,6 @@ t_command   **commands(t_token *tkn_lst)//Funcion principal
             return (NULL);
         }
         process_tokens(cmd, cmd->redirections, &curr_tkn);
-        if (cmd->redir_error)
-        {
-            free_single_cmd(cmd);
-            if (cmd_list)
-                free(cmd_list);
-            return (NULL);
-        }
         cmd_list[cmd_index++] = cmd;
         if (curr_tkn && curr_tkn->type == 2 && ft_strncmp(curr_tkn->value, "|", 1) == 0)
             curr_tkn = curr_tkn->next;

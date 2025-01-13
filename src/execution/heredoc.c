@@ -58,6 +58,5 @@ int process_heredoc(t_token *heredoc_token)
         close(redir[0]);
         return -1;
     }
-
     return redir[0]; 
 }

@@ -38,6 +38,7 @@ struct s_token
     short   is_quote;
     short   expand;
     int     has_space;
+    int     hd_fd;
     t_type  type;
     t_token *next;
     t_token *prev;

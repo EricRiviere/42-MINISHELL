@@ -32,26 +32,19 @@ void    print_enviroment(t_env **env_list)
 
 int is_builtin(t_command *cmd)
 {
-    if (ft_strncmp(&cmd->cmd[0], "env", ft_strlen("env")) == 0 
-            && ft_strlen("env") == ft_strlen(&cmd->cmd[0]))
+    if (ft_strncmp(&cmd->cmd[0], "env", -1) == 0)
         return (1);
-    else if (ft_strncmp(&cmd->cmd[0], "cd", ft_strlen("cd")) == 0 
-            && ft_strlen("cd") == ft_strlen(&cmd->cmd[0]))
+    else if (ft_strncmp(&cmd->cmd[0], "cd", -1) == 0)
         return (2);
-    else if (ft_strncmp(&cmd->cmd[0], "export", ft_strlen("export")) == 0 
-            && ft_strlen("export") == ft_strlen(&cmd->cmd[0]))
+    else if (ft_strncmp(&cmd->cmd[0], "export", -1) == 0)
         return (3);
-    else if (ft_strncmp(&cmd->cmd[0], "unset", ft_strlen("unset")) == 0 
-            && ft_strlen("unset") == ft_strlen(&cmd->cmd[0]))
+    else if (ft_strncmp(&cmd->cmd[0], "unset", -1) == 0)
         return (4);
-    else if (ft_strncmp(&cmd->cmd[0], "pwd", ft_strlen("pwd")) == 0 
-            && ft_strlen("pwd") == ft_strlen(&cmd->cmd[0]))
+    else if (ft_strncmp(&cmd->cmd[0], "pwd", -1) == 0)
         return (5);
-    else if (ft_strncmp(&cmd->cmd[0], "exit", ft_strlen("exit")) == 0 
-            && ft_strlen("exit") == ft_strlen(&cmd->cmd[0]))
+    else if (ft_strncmp(&cmd->cmd[0], "exit", -1) == 0)
         return (6);
-    else if (ft_strncmp(&cmd->cmd[0], "echo", ft_strlen("echo")) == 0 
-            && ft_strlen("echo") == ft_strlen(&cmd->cmd[0]))
+    else if (ft_strncmp(&cmd->cmd[0], "echo", -1) == 0)
         return (7);
     else
         return (0);

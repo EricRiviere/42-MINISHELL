@@ -9,12 +9,10 @@ static int	check_flag(t_command **cmd)
 		return (0);
 
 	// Verificamos si el primer argumento es "-n"
-	if (ft_strncmp(cmd[0]->args[0], "-n", ft_strlen("-n")) == 0 
-		&& ft_strlen("-n") == ft_strlen(cmd[0]->args[0]))
+	if (ft_strncmp(cmd[0]->args[0], "-n", -1) == 0)
 	{
 		// Comprobamos si hay múltiples "-n" consecutivos
-		while (cmd[0]->args[i] && ft_strncmp(cmd[0]->args[i], "-n", ft_strlen("-n")) == 0 
-			&& ft_strlen("-n") == ft_strlen(cmd[0]->args[i]))
+		while (cmd[0]->args[i] && ft_strncmp(cmd[0]->args[i], "-n", -1) == 0)
 			i++;
 		return (i);
 	}
@@ -56,13 +54,13 @@ void get_echo(t_command **cmd)
 			while (cmd[0]->args[i] != NULL)
 			{
 				if (cmd[0]->fd_out != -1)
-					ft_putstr_fd((cmd[0]->args[i]), cmd[0]->fd_out);
+					ft_putstr_fd((cmd[0]->args[i]), 1);
 				else
 					printf("%s", (cmd[0]->args[i]));
 				if (cmd[0]->args[i + 1])
 				{
 					if (cmd[0]->fd_out != -1)
-						ft_putstr_fd(" ", cmd[0]->fd_out);
+						ft_putstr_fd(" ", 1);
 					else
 						printf(" ");
 				}

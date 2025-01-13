@@ -37,7 +37,7 @@ int main(int argc, char **argv, char **env)
                 {
                     if (ft_strncmp(curr_tkn->value, "<<", 2) == 0)
                     {
-                        process_heredoc(curr_tkn);
+                        curr_tkn->hd_fd = process_heredoc(curr_tkn);
                     }
                     curr_tkn = curr_tkn->next;
                 }
