@@ -36,18 +36,10 @@ int main(int argc, char **argv, char **env)
                 while (curr_tkn)
                 {
                     if (ft_strncmp(curr_tkn->value, "<<", 2) == 0)
-                    {
                         curr_tkn->hd_fd = process_heredoc(curr_tkn);
-                    }
-                    curr_tkn = curr_tkn->next;
-                }
-                curr_tkn = tkn_lst;
-                while (curr_tkn)
-                {
                     expand_variables(curr_tkn, env_lst);
                     curr_tkn = curr_tkn->next;
-                }
-
+                }   
                 preprocess_tokens(&tkn_lst);
                 cmd_list = commands(tkn_lst);
                 execute_pipes(cmd_list, &env_lst);
