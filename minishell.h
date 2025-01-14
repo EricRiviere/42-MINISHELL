@@ -144,7 +144,7 @@ void    cu_env_var(t_env **env, char *key, char *value);
 void export_new_var(t_command **cmd, t_env **env);
 void delete_env_var(t_command **cmd, t_env **env);
 //------------------ CD FUNCTION
-void change_dir(const char *path, t_env **env);
+void change_dir(t_command *cmd, t_env **env);
 //------------------ PWD FUNCTION
 void    printf_pwd(t_env **env);
 //------------------ ECHO FUNCTION

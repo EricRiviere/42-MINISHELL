@@ -53,11 +53,11 @@ int is_builtin(t_command *cmd)
 void manage_cd(t_command *cmd, t_env **env)
 {
     if (!cmd->args || !cmd->args[0])
-        change_dir(NULL, env);
+        change_dir(cmd, env);
     else if (cmd->args[1])
         ft_putstr_fd("minishell: cd: too many arguments", 2);
     else
-        change_dir(cmd->args[0], env);
+        change_dir(cmd, env);
 }
 
 void manage_export(t_command *cmd, t_env **env)

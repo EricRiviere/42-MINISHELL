@@ -1,42 +1,55 @@
 #include "minishell.h"
 
-void change_dir(const char *path, t_env **env)
+void change_dir(t_command *cmd, t_env **env)
 {
     char *old_pwd;
     char *new_pwd;
+    char *target_dir;
     t_env *env_lst;
 
     env_lst = *env;
-    if (!path || path[0] == '\0')// Si el path es NULL o vacío, usamos el valor de HOME
-        path = get_env_value("HOME", env_lst);
-    if (!path || path[0] == '\0') // Si HOME no está definido
+    if (!cmd->args[0] || cmd->args[0][0] == '\0') // Caso sin argumentos
     {
-        ft_putstr_fd("minishell: cd: HOME not set\n", 2);
-        return;
-    }
-    if (ft_strncmp(path, "-", 1) == 0 && ft_strlen(path) == ft_strlen("-"))// Caso "cd -": cambiar a OLDPWD
-    {
-        path = get_env_value("OLDPWD", env_lst);
-        if (!path)
+        target_dir = get_env_value("HOME", env_lst);
+        if (!target_dir || target_dir[0] == '\0')
         {
-            ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
+            ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+            cmd->status = EXIT_FAILURE;
             return;
         }
     }
-    old_pwd = get_env_value("PWD", env_lst);// Guardamos el valor de PWD actual como OLDPWD
-    if (chdir(path) == -1)// Cambiamos de directorio con chdir
+    else if (ft_strncmp(cmd->args[0], "-", -1) == 0) // Caso "cd -"
     {
-        perror("minishell: cd"); // Mostrar el error específico
-        return;
+        target_dir = get_env_value("OLDPWD", env_lst);
+        if (!target_dir)
+        {
+            ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
+            cmd->status = EXIT_FAILURE;
+            return;
+        }
+        ft_putendl_fd(target_dir, 1); // Imprime el valor de OLDPWD
     }
-    new_pwd = getcwd(NULL, 0);// Obtenemos el nuevo directorio con getcwd  (reserva memoria, hay que liberar)
-    if (!new_pwd)
+    else
+        target_dir = cmd->args[0]; // Caso normal
+
+    old_pwd = getcwd(NULL, 0); // Guarda el directorio actual como OLDPWD
+    if (chdir(target_dir) == -1) // Cambia al nuevo directorio
     {
         perror("minishell: cd");
+        free(old_pwd);
+        cmd->status = EXIT_FAILURE;
         return;
     }
-    if (old_pwd)// Actualizamos las variables de entorno
-        cu_env_var(env, "OLDPWD", old_pwd);
-    cu_env_var(env, "PWD", new_pwd);
-    free(new_pwd);
+    new_pwd = getcwd(NULL, 0); // Obtén el nuevo directorio como PWD
+    if (old_pwd)
+    {
+        cu_env_var(env, "OLDPWD", old_pwd); // Actualiza OLDPWD
+        free(old_pwd);
+    }
+    if (new_pwd)
+    {
+        cu_env_var(env, "PWD", new_pwd); // Actualiza PWD
+        free(new_pwd);
+    }
+    cmd->status = EXIT_SUCCESS;
 }
