@@ -1,4 +1,11 @@
 #include "minishell.h"
+void ctrl_c(int signal)
+{
+    if (signal == SIGINT)
+    {
+        printf("\n");
+    }
+}
 
 int main(int argc, char **argv, char **env)
 {
@@ -8,6 +15,8 @@ int main(int argc, char **argv, char **env)
     t_env   *env_lst;
     t_command **cmd_list;
 
+    signal(SIGINT, ctrl_c);
+    signal(SIGQUIT, SIG_IGN);
     (void)argv;
     if (argc != 1)
     {

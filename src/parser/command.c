@@ -65,6 +65,7 @@ t_command *init_command()// Función para inicializar un comando
     cmd->cmd = NULL;
     cmd->args = args;
     cmd->redirections = redir;
+    cmd->status = 0;
     cmd->fd_in = -1;
     cmd->fd_out = -1;
     redir->operator = operator;

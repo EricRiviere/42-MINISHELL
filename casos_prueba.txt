@@ -1,0 +1,144 @@
+Categoría: Compilación
+
+Test: Ejecutar make sin errores.
+Expected outcome: La compilación se completa sin errores.
+Test: Ejecutar make -n y verificar las banderas -Wall -Wextra -Werror.
+Expected outcome: Todas las banderas requeridas están presentes.
+Test: Ejecutar make re tras modificar un archivo fuente.
+Expected outcome: La recompilación no genera errores ni re-enlaza archivos innecesarios.
+
+Categoría: Comandos Simples
+
+Test: Ejecutar /bin/ls.
+Expected outcome: Lista el contenido del directorio actual.
+Test: Ejecutar un comando vacío (solo presionar Enter).
+Expected outcome: No ocurre nada, se muestra nuevamente el prompt.
+Test: Ejecutar un comando con solo espacios o tabulaciones.
+Expected outcome: No ocurre nada, se muestra nuevamente el prompt.
+Test: Ejecutar /bin/echo Hello World.
+Expected outcome: Se imprime Hello World.
+
+Categoría: Argumentos
+
+Test: Ejecutar /bin/ls -l -a.
+Expected outcome: Lista todos los archivos con detalles.
+Test: Ejecutar /bin/echo "Hello, World!".
+Expected outcome: Se imprime Hello, World!.
+Test: Ejecutar /bin/echo "".
+Expected outcome: No imprime nada, pero genera un salto de línea.
+Test: Ejecutar /bin/echo "test" "multiple" "arguments".
+Expected outcome: Imprime test multiple arguments.
+
+Categoría: Echo
+
+Test: Ejecutar echo Hello.
+Expected outcome: Se imprime Hello.
+Test: Ejecutar echo -n Hello.
+Expected outcome: Imprime Hello sin salto de línea.
+Test: Ejecutar echo -n -n Hello.
+Expected outcome: Imprime Hello sin salto de línea (debe manejar opciones duplicadas correctamente).
+
+Categoría: Exit
+
+Test: Ejecutar exit.
+Expected outcome: El shell termina.
+Test: Ejecutar exit 42.
+Expected outcome: El shell termina con el código de salida 42.
+Test: Ejecutar exit abc.
+Expected outcome: Imprime un error de formato y termina con código de salida 1.
+
+Categoría: Variables de Entorno
+
+Test: Ejecutar echo $PATH.
+Expected outcome: Imprime el valor de la variable PATH.
+Test: Ejecutar echo $USER.
+Expected outcome: Imprime el nombre del usuario actual.
+Test: Ejecutar echo $HOME$USER.
+Expected outcome: Concatenación de las variables HOME y USER.
+Test: Ejecutar echo "$USER is logged in".
+Expected outcome: Interpola la variable USER y muestra su valor dentro del texto.
+
+Categoría: Redirecciones
+
+Test: Ejecutar echo "Hello" > test.txt y verificar el contenido del archivo.
+Expected outcome: El archivo contiene Hello.
+Test: Ejecutar cat < test.txt.
+Expected outcome: Muestra el contenido del archivo test.txt.
+Test: Ejecutar echo "Line 2" >> test.txt.
+Expected outcome: Añade Line 2 al archivo sin sobrescribir el contenido previo.
+Test: Ejecutar cat << EOF y proporcionar texto hasta EOF.
+Expected outcome: Muestra el texto proporcionado en el terminal.
+
+Categoría: Pipes
+
+Test: Ejecutar cat test.txt | grep Hello.
+Expected outcome: Muestra líneas que contienen Hello en test.txt.
+Test: Ejecutar ls | wc -l.
+Expected outcome: Muestra el número de líneas de salida de ls.
+Test: Ejecutar cat | grep anything y escribir en la entrada estándar.
+Expected outcome: Filtra las líneas que contienen anything en el texto ingresado.
+
+Categoría: Señales
+
+Test: Presionar Ctrl+C en un prompt vacío.
+Expected outcome: Muestra un nuevo prompt en una nueva línea.
+Test: Presionar Ctrl+D en un prompt vacío.
+Expected outcome: Termina el shell.
+Test: Presionar Ctrl+\ en un prompt vacío.
+Expected outcome: No ocurre nada.
+Test: Presionar Ctrl+C mientras cat está ejecutándose.
+Expected outcome: Interrumpe cat y muestra un nuevo prompt.
+Test: Presionar Ctrl+\ mientras cat está ejecutándose.
+Expected outcome: Genera un core dump.
+
+Categoría: cd
+
+Test: Ejecutar cd .. y luego pwd.
+Expected outcome: Cambia al directorio padre y muestra su ruta.
+Test: Ejecutar cd /nonexistentpath.
+Expected outcome: Imprime un error indicando que la ruta no existe.
+Test: Ejecutar cd - después de cambiar de directorio.
+Expected outcome: Regresa al directorio previo.
+
+Categoría: env, export, unset
+
+Test: Ejecutar env.
+Expected outcome: Muestra todas las variables de entorno actuales.
+Test: Ejecutar export NEW_VAR=Test y luego echo $NEW_VAR.
+Expected outcome: Muestra Test.
+Test: Ejecutar unset NEW_VAR y luego echo $NEW_VAR.
+Expected outcome: No imprime nada.
+
+Categoría: Historial
+
+Test: Escribir varios comandos y usar la tecla Up para navegar en el historial.
+Expected outcome: Navega correctamente por los comandos anteriores.
+Test: Ejecutar un comando desde el historial usando Enter.
+Expected outcome: El comando se ejecuta correctamente.
+
+Categoría: Manejo de Errores
+
+Test: Ejecutar randomcommand.
+Expected outcome: Imprime un error indicando que el comando no existe.
+Test: Ejecutar un comando extremadamente largo.
+Expected outcome: Maneja correctamente el comando sin errores.
+Test: Ejecutar un comando con caracteres especiales como \;.
+Expected outcome: Maneja correctamente los caracteres no válidos.
+
+Categoría: Interacción Compleja
+
+Test: Ejecutar cat | grep Hello | wc -l.
+Expected outcome: Maneja correctamente la tubería y muestra el resultado esperado.
+Test: Combinar redirecciones y tuberías: echo "Hello" > test.txt | cat < test.txt.
+Expected outcome: La salida de las redirecciones y pipes se maneja correctamente.
+Test: Ejecutar comandos dentro de comillas simples: echo '$HOME'.
+Expected outcome: Muestra literalmente $HOME.
+Test: Ejecutar comandos con múltiples comillas dobles: echo "User: $USER, Home: $HOME".
+Expected outcome: Interpola las variables y muestra los valores esperados.
+
+Categoría: Casos Especiales
+
+Test: Ejecutar ls non_existing_file | grep hello.
+Expected outcome: Maneja el error de ls sin bloquearse.
+Test: Ejecutar echo "Hello" > test.txt && cat < test.txt.
+Expected outcome: Ejecuta ambos comandos secuencialmente y muestra Hello.

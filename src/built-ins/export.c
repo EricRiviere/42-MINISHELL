@@ -106,7 +106,10 @@ void export_new_var(t_command **cmd, t_env **env)
             free(key);
         }
         else
+        {
             ft_putstr_fd("minishell: export: not a valid identifier\n", 2);
+            (*cmd)->status = EXIT_FAILURE;
+        }
         i++; 
     } 
 }

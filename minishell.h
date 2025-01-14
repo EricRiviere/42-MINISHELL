@@ -11,6 +11,8 @@
 # include <fcntl.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <signal.h>
+
 //------------------ TOKEN TYPE ENUM
 typedef enum    s_type
 {
@@ -75,6 +77,7 @@ typedef struct s_command
     char    **args;
     t_redir *redirections;
     int     redir_error;
+    int     status;
     int     fd_in;
     int     fd_out;
 }   t_command;
