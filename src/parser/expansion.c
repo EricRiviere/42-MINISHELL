@@ -20,6 +20,15 @@ int is_valid_env_char(char c)
 
 static void handle_variable_expansion(t_expand_args *args)
 {
+    if (args->token->value[args->i] == '?')
+    {
+        args->i++;
+        //args->temp = ft_strdup(get_env_value("?", args->env_lst));
+        args->temp = ft_itoa(get_status(0, 100));
+        args->expand = ft_strjoin_free(args->expand, args->temp);
+        free(args->temp);
+        return;
+    }
     if (args->token->is_quote == 34 && (!args->token->value[args->i] || args->token->value[args->i] == ' ' || !is_valid_env_char(args->token->value[args->i])))
     {
         args->temp = ft_strdup("$");
@@ -55,7 +64,7 @@ static void handle_literal_text(t_expand_args *args)
     free(args->temp);
 }
 
-char *expand_value(t_token *token, t_env *env_lst)
+char *expand_value(t_token *token, t_env **env_lst)
 {
     t_expand_args args;
 
@@ -63,7 +72,7 @@ char *expand_value(t_token *token, t_env *env_lst)
         return (ft_strdup(token->value));
 
     args.token = token;
-    args.env_lst = env_lst;
+    args.env_lst = *env_lst;
     args.expand = NULL;
     args.i = 0;
     args.temp = NULL;
@@ -81,7 +90,7 @@ char *expand_value(t_token *token, t_env *env_lst)
 }
 
 
-void expand_variables(t_token *token, t_env *env_lst)
+void expand_variables(t_token *token, t_env **env_lst)
 {
     char *new_value;
 

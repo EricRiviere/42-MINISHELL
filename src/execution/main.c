@@ -7,6 +7,16 @@ void ctrl_c(int signal)
     }
 }
 
+
+
+int get_status(int flag, int value)
+{
+    static int new;
+    if (flag == 1)
+        new = value;
+    return new;
+}
+
 int main(int argc, char **argv, char **env)
 {
     char    *line;
@@ -46,15 +56,17 @@ int main(int argc, char **argv, char **env)
                 {
                     if (ft_strncmp(curr_tkn->value, "<<", 2) == 0)
                         curr_tkn->hd_fd = process_heredoc(curr_tkn);
-                    expand_variables(curr_tkn, env_lst);
+                    expand_variables(curr_tkn, &env_lst);
                     curr_tkn = curr_tkn->next;
-                }   
+                }
                 preprocess_tokens(&tkn_lst);
+                if (!get_status(0, 0))
+                        cu_env_var(&env_lst, "?", ft_itoa(0));
                 cmd_list = commands(tkn_lst);
+                get_status(1, 0);
                 execute_pipes(cmd_list, &env_lst);
-                //execute_cmd(cmd_list, &env_lst);
                 //print_commands(line, cmd_list);
-               // print_tokens(line, tkn_lst);
+                //print_tokens(line, tkn_lst);
                 free_cmd_list(cmd_list);
             }
             free_tkn_lst(tkn_lst);

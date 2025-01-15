@@ -14,7 +14,7 @@ void change_dir(t_command *cmd, t_env **env)
         if (!target_dir || target_dir[0] == '\0')
         {
             ft_putstr_fd("minishell: cd: HOME not set\n", 2);
-            cmd->status = EXIT_FAILURE;
+            cu_env_var(env, "?", ft_itoa(get_status(1, EXIT_FAILURE)));
             return;
         }
     }
@@ -24,7 +24,7 @@ void change_dir(t_command *cmd, t_env **env)
         if (!target_dir)
         {
             ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
-            cmd->status = EXIT_FAILURE;
+            cu_env_var(env, "?", ft_itoa(get_status(1, EXIT_FAILURE)));
             return;
         }
         ft_putendl_fd(target_dir, 1); // Imprime el valor de OLDPWD
@@ -37,7 +37,7 @@ void change_dir(t_command *cmd, t_env **env)
     {
         perror("minishell: cd");
         free(old_pwd);
-        cmd->status = EXIT_FAILURE;
+        cu_env_var(env, "?", ft_itoa(get_status(1, EXIT_FAILURE)));
         return;
     }
     new_pwd = getcwd(NULL, 0); // Obtén el nuevo directorio como PWD
@@ -51,5 +51,4 @@ void change_dir(t_command *cmd, t_env **env)
         cu_env_var(env, "PWD", new_pwd); // Actualiza PWD
         free(new_pwd);
     }
-    cmd->status = EXIT_SUCCESS;
 }

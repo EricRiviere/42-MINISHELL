@@ -123,8 +123,8 @@ int syntax_check(t_token *tkn_lst);
 //------------------ EXPANSION FUNCTIONS
 char *ft_strjoin_free(char *s1, char *s2);
 int is_valid_env_char(char c);
-char *expand_value(t_token *token, t_env *env_lst);
-void expand_variables(t_token *token, t_env *env_lst);
+char *expand_value(t_token *token, t_env **env_lst);
+void expand_variables(t_token *token, t_env **env_lst);
 //------------------ COMMAND FUNCTIONS
 t_command **commands(t_token *tkn_lst);
 void preprocess_tokens(t_token **tkn_lst);
@@ -148,8 +148,12 @@ void change_dir(t_command *cmd, t_env **env);
 //------------------ PWD FUNCTION
 void    printf_pwd(t_env **env);
 //------------------ ECHO FUNCTION
-void get_echo(t_command **cmd);
+void get_echo(t_command *cmd);
 int get_cmd_num(t_command **cmd);
 //------------------ PIPES
 void execute_pipes(t_command **cmds, t_env **env);
+
+
+
+int get_status(int flag, int value);
 #endif

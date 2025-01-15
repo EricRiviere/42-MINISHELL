@@ -54,15 +54,19 @@ void    cu_env_var(t_env **env, char *key, char *value)
         if (curr_node->value)
             free(curr_node->value);
         if (value)
+        {
             curr_node->value = ft_strdup(value);
+        }
         else
             curr_node->value = NULL;
     }
     else
+    {
         if (value)
             add_env_variable(env, key, value);
         else
             add_env_variable_with_null(env, key);
+    }
 }
 
 void export_new_var(t_command **cmd, t_env **env)
@@ -104,11 +108,12 @@ void export_new_var(t_command **cmd, t_env **env)
                     cu_env_var(env, key, NULL);
             }
             free(key);
+            // cu_env_var(env, "?", ft_itoa(get_status(1, EXIT_SUCCESS)));
         }
         else
         {
             ft_putstr_fd("minishell: export: not a valid identifier\n", 2);
-            (*cmd)->status = EXIT_FAILURE;
+            cu_env_var(env, "?", ft_itoa(get_status(1, EXIT_FAILURE)));
         }
         i++; 
     } 

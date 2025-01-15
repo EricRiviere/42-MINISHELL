@@ -30,4 +30,6 @@ void delete_env_var(t_command **cmd, t_env **env)
         }
         i++;
     }
+    (*cmd)->status = EXIT_SUCCESS;
+    cu_env_var(env, "?", ft_itoa((*cmd)->status));
 }

@@ -103,71 +103,55 @@ void execute_cmd(t_command **cmd, t_env **env)
     else
     {
         new_arr = new_args(cmd);
-        // id = fork();
-        // if (id == -1)
-        // {
-        //     perror("fork");
-        //     free_array(new_arr);
-        //     return ;
-        // }
-        // if (id == 0)
-        // {
-            if ((*cmd)->cmd[0] == '/')
+        if ((*cmd)->cmd[0] == '/')
+        {
+            if (access((*cmd)->cmd, F_OK | X_OK | R_OK) == 0)
+                execve((*cmd)->cmd, new_arr, NULL);
+            else
             {
-                if (access((*cmd)->cmd, F_OK | X_OK | R_OK) == 0)
-                    execve((*cmd)->cmd, new_arr, NULL);
-                else
-                {
-                    ft_putstr_fd("command not found : ", 2);
-                    ft_putstr_fd((*cmd)->cmd, 2);
-                    ft_putstr_fd("\n", 2);
-                }
-                free_array(new_arr);
-                exit(127);
+                ft_putstr_fd("command not found : ", 2);
+                ft_putstr_fd((*cmd)->cmd, 2);
+                ft_putstr_fd("\n", 2);
             }
-            else if ((*cmd)->cmd[0] == '.')
-            {
-                if (access((*cmd)->cmd, F_OK | X_OK | R_OK) == 0)
-                    execve((*cmd)->cmd, new_arr, NULL);
-                else
-                {
-                    ft_putstr_fd("command not found : ", 2);
-                    ft_putstr_fd((*cmd)->cmd, 2);
-                    ft_putstr_fd("\n", 2);
-                }
-                free_array(new_arr);
-                exit(127);
-            }
-            char *path = find_path(*env);
-            char **paths = ft_split(path, ':');
-            i = 0;
-            while (paths[i])
-            {
-                char *tmp =  ft_strjoin(paths[i], "/");
-                char *full_path = ft_strjoin(tmp, (*cmd)->cmd);
-                if  (tmp)
-                    free(tmp);
-                if (access(full_path, F_OK | X_OK | R_OK) == 0)
-                {
-                    execve(full_path, new_arr, NULL);
-                    free(full_path);
-                    break;
-                }
-                free(full_path);
-                i++;
-            }
-            ft_putstr_fd("command not found : ", 2);
-            ft_putstr_fd((*cmd)->cmd, 2);
-            ft_putstr_fd("\n", 2);
             free_array(new_arr);
             exit(127);
-        // }
-        // else
-        // {
-        //     waitpid(id, &(*cmd)->status, 0);
-        //     free_array(new_arr);
-        //     (*cmd)->status = WEXITSTATUS((*cmd)->status);
-        // }
+        }
+        else if ((*cmd)->cmd[0] == '.')
+        {
+            if (access((*cmd)->cmd, F_OK | X_OK | R_OK) == 0)
+                execve((*cmd)->cmd, new_arr, NULL);
+            else
+            {
+                ft_putstr_fd("command not found : ", 2);
+                ft_putstr_fd((*cmd)->cmd, 2);
+                ft_putstr_fd("\n", 2);
+            }
+            free_array(new_arr);
+            exit(127);
+        }
+        char *path = find_path(*env);
+        char **paths = ft_split(path, ':');
+        i = 0;
+        while (paths[i])
+        {
+            char *tmp =  ft_strjoin(paths[i], "/");
+            char *full_path = ft_strjoin(tmp, (*cmd)->cmd);
+            if  (tmp)
+                free(tmp);
+            if (access(full_path, F_OK | X_OK | R_OK) == 0)
+            {
+                execve(full_path, new_arr, NULL);
+                free(full_path);
+                break;
+            }
+            free(full_path);
+            i++;
+        }
+        ft_putstr_fd("command not found : ", 2);
+        ft_putstr_fd((*cmd)->cmd, 2);
+        ft_putstr_fd("\n", 2);
+        free_array(new_arr);
+        exit(127);
     }
     int term_out = 0;
     int term_in = 0;
