@@ -152,4 +152,5 @@ void get_echo(t_command **cmd);
 int get_cmd_num(t_command **cmd);
 //------------------ PIPES
 void execute_pipes(t_command **cmds, t_env **env);
+void ctrl_c(int signal);
 #endif

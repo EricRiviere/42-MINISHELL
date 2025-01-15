@@ -3,7 +3,7 @@ void ctrl_c(int signal)
 {
     if (signal == SIGINT)
     {
-        printf("\n");
+        printf("\nminishell> ");
     }
 }
 
