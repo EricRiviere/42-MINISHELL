@@ -63,6 +63,7 @@ void free_array(char **arr)
     }
     free(arr);
 }
+
 int get_cmd_num(t_command **cmd)
 {
     int num;
@@ -80,37 +81,37 @@ int get_cmd_num(t_command **cmd)
     }
     return (num);
 }
+
 void execute_cmd(t_command **cmd, t_env **env)
 {
     int id;
-    int status;
     char **new_arr;
     int i;
     int cmd_num = get_cmd_num(cmd);
 
     id = 0;
-    status = 0;
     if (cmd == NULL)
         return ;
     if ((*cmd)->cmd == NULL)
         return ;
     if (cmd_num == 1 && is_builtin(*cmd) != 0)
     {
-        manage_builtins(cmd, env);
-        close((*cmd)->fd_out);
+        manage_builtins(*cmd, env);
+        if ((*cmd)->fd_out != -1)
+            close((*cmd)->fd_out);
     }
     else
     {
         new_arr = new_args(cmd);
-        id = fork();
-        if (id == -1)
-        {
-            perror("fork");
-            free_array(new_arr);
-            return ;
-        }
-        if (id == 0)
-        {
+        // id = fork();
+        // if (id == -1)
+        // {
+        //     perror("fork");
+        //     free_array(new_arr);
+        //     return ;
+        // }
+        // if (id == 0)
+        // {
             if ((*cmd)->cmd[0] == '/')
             {
                 if (access((*cmd)->cmd, F_OK | X_OK | R_OK) == 0)
@@ -122,7 +123,20 @@ void execute_cmd(t_command **cmd, t_env **env)
                     ft_putstr_fd("\n", 2);
                 }
                 free_array(new_arr);
-                exit(127) ;
+                exit(127);
+            }
+            else if ((*cmd)->cmd[0] == '.')
+            {
+                if (access((*cmd)->cmd, F_OK | X_OK | R_OK) == 0)
+                    execve((*cmd)->cmd, new_arr, NULL);
+                else
+                {
+                    ft_putstr_fd("command not found : ", 2);
+                    ft_putstr_fd((*cmd)->cmd, 2);
+                    ft_putstr_fd("\n", 2);
+                }
+                free_array(new_arr);
+                exit(127);
             }
             char *path = find_path(*env);
             char **paths = ft_split(path, ':');
@@ -147,24 +161,24 @@ void execute_cmd(t_command **cmd, t_env **env)
             ft_putstr_fd("\n", 2);
             free_array(new_arr);
             exit(127);
-        }
-        else
-        {
-            waitpid(id, &status, 0);
-            free_array(new_arr);
-        }
+        // }
+        // else
+        // {
+        //     waitpid(id, &(*cmd)->status, 0);
+        //     free_array(new_arr);
+        //     (*cmd)->status = WEXITSTATUS((*cmd)->status);
+        // }
     }
-    // reset terminal file 
-    // int term_out = 0;
-    // int term_in = 0;
-    // if (dup2(term_out, STDOUT_FILENO) == -1)
-    // {
-    //     perror("dup");
-    //     exit(EXIT_FAILURE);
-    // }
-    // if (dup2(term_in, STDIN_FILENO) == -1)
-    // {
-    //     perror("dup");
-    //     exit(EXIT_FAILURE);
-    // }
+    int term_out = 0;
+    int term_in = 0;
+    if (dup2(term_out, STDOUT_FILENO) == -1)
+    {
+        perror("dup");
+        exit(EXIT_FAILURE);
+    }
+    if (dup2(term_in, STDIN_FILENO) == -1)
+    {
+        perror("dup");
+        exit(EXIT_FAILURE);
+    }
 }

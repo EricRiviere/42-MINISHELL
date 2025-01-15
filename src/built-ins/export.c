@@ -12,7 +12,7 @@ t_env *get_var(t_env **env, char *key)
     curr_node = *env;
     while (curr_node)
     {
-        if (ft_strncmp(key, curr_node->key, ft_strlen(key)) == 0 && ft_strlen(key) == ft_strlen(curr_node->key))
+        if (ft_strncmp(key, curr_node->key, -1) == 0)
             return (curr_node);
         else
             curr_node = curr_node->next;
@@ -106,7 +106,10 @@ void export_new_var(t_command **cmd, t_env **env)
             free(key);
         }
         else
+        {
             ft_putstr_fd("minishell: export: not a valid identifier\n", 2);
+            (*cmd)->status = EXIT_FAILURE;
+        }
         i++; 
     } 
 }

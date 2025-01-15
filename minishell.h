@@ -10,6 +10,8 @@
 # include "libft/libft.h"
 # include <fcntl.h>
 #include <sys/wait.h>
+#include <string.h>
+#include <signal.h>
 
 //------------------ TOKEN TYPE ENUM
 typedef enum    s_type
@@ -38,6 +40,7 @@ struct s_token
     short   is_quote;
     short   expand;
     int     has_space;
+    int     hd_fd;
     t_type  type;
     t_token *next;
     t_token *prev;
@@ -74,6 +77,7 @@ typedef struct s_command
     char    **args;
     t_redir *redirections;
     int     redir_error;
+    int     status;
     int     fd_in;
     int     fd_out;
 }   t_command;
@@ -122,7 +126,6 @@ int is_valid_env_char(char c);
 char *expand_value(t_token *token, t_env *env_lst);
 void expand_variables(t_token *token, t_env *env_lst);
 //------------------ COMMAND FUNCTIONS
-//void    commands(t_token *tkn_lst);
 t_command **commands(t_token *tkn_lst);
 void preprocess_tokens(t_token **tkn_lst);
 void free_cmd_list(t_command **cmd_list);
@@ -131,9 +134,9 @@ void execute_cmd(t_command **cmd, t_env **env);
 void print_commands(char *line, t_command **cmd_list);
 void print_tokens(char *line, t_token *tkn_lst);
 //------------------ HEREDOC
-void process_heredoc(t_token *heredoc_token);
+int process_heredoc(t_token *heredoc_token);
 //------------------ BUILTINS
-void    manage_builtins(t_command **cmd, t_env **env);
+void    manage_builtins(t_command *cmd, t_env **env);
 int is_builtin(t_command *cmd);
 //------------------ EXPORT - UNSET FUNCTIONS
 t_env *get_var(t_env **env, char *key);
@@ -147,4 +150,6 @@ void    printf_pwd(t_env **env);
 //------------------ ECHO FUNCTION
 void get_echo(t_command **cmd);
 int get_cmd_num(t_command **cmd);
+//------------------ PIPES
+void execute_pipes(t_command **cmds, t_env **env);
 #endif

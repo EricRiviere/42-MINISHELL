@@ -1,5 +1,5 @@
 #include "minishell.h"
-//--------------------------------- refactorizarrrrrr
+
 void change_dir(const char *path, t_env **env)
 {
     char *old_pwd;

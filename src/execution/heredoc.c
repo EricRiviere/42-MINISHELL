@@ -1,29 +1,62 @@
+
 #include "minishell.h"
 
-void process_heredoc(t_token *heredoc_token)
+int process_heredoc(t_token *heredoc_token)
 {
-    int fd;
+    int redir[2];
+    int heredoc;
+    int status;
     char *line;
-    fd = open("/tmp/heredoc_pipe", O_CREAT | O_WRONLY | O_TRUNC, 0644);
-    if (fd == -1)
+
+    status = 0;
+    if (pipe(redir) == -1)
     {
-        ft_putstr_fd("Error opening heredoc", 2);
-        return ;
+        perror("pipe");
+        return -1;
     }
-    while (1)
+
+    heredoc = fork();
+    if (heredoc == -1)
     {
-        line = readline(">");
-        if ((ft_strncmp(line, heredoc_token->next->value, ft_strlen(heredoc_token->next->value)) == 0)
-            && ft_strlen(line) == ft_strlen(heredoc_token->next->value))
+        perror("fork");
+        close(redir[0]);
+        close(redir[1]);
+        return -1;
+    }
+
+    if (heredoc == 0) 
+    {
+        close(redir[0]);
+        while (1)
         {
+            line = readline("> ");
+            if (!line || strcmp(heredoc_token->next->value, line) == 0)
+            {
+                free(line);
+                break;
+            }
+            write(redir[1], line, ft_strlen(line));
+            write(redir[1], "\n", 1);
             free(line);
-            break;
         }
-        if (line == NULL)
-            break ;
-        write(fd, line, ft_strlen(line));
-        write(fd, "\n" ,1);
-        free(line);
+        close(redir[1]);
+        exit(0);
     }
-    close(fd);
+
+    // Parent process
+    close(redir[1]);
+    if (waitpid(heredoc, &status, 0) == -1)
+    {
+        perror("waitpid");
+        close(redir[0]);
+        return -1;
+    }
+
+    status = WEXITSTATUS(status);
+    if (status != 0)
+    {
+        close(redir[0]);
+        return -1;
+    }
+    return redir[0]; 
 }

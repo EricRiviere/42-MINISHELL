@@ -32,6 +32,7 @@ t_token *init_token(t_type type)
     new_tkn->value = NULL;
     new_tkn->is_quote = 0;
     new_tkn->expand = 0;
+    new_tkn->hd_fd = 1;
     new_tkn->type = type;
     new_tkn->next = NULL;
     new_tkn->prev = NULL;
