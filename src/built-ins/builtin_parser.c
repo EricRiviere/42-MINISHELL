@@ -7,7 +7,9 @@ void    print_declared_env(t_env **env_list)
     curr_var = *env_list;
     while(curr_var)
     {
-        if (curr_var->value == NULL)
+        if (ft_strncmp(curr_var->key, "?", -1) == 0)
+            curr_var = curr_var->next;
+        else if (curr_var->value == NULL)
             printf("declare -x %s\n", curr_var->key);
         else if (curr_var->value[0] == '\0')
             printf("declare -x %s=\"\"\n", curr_var->key);
@@ -24,7 +26,9 @@ void    print_enviroment(t_env **env_list)
     curr_var = *env_list;
     while(curr_var)
     {
-        if (curr_var->value != NULL && curr_var->value[0] != '\0')
+        if (ft_strncmp(curr_var->key, "?", -1) == 0)
+            curr_var = curr_var->next;
+        else if (curr_var->value != NULL && curr_var->value[0] != '\0')
             printf("%s=%s\n", curr_var->key, curr_var->value);
         curr_var = curr_var->next;
     }

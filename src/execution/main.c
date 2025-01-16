@@ -6,7 +6,7 @@ void ctrl_c(int signal)
         printf("\n");
     }
 }
-
+//podrimos hacer macro para darle un nuevo nombre a 1 o 0 en el status
 int get_status(int flag, int value)
 {
     static int new;
