@@ -30,7 +30,7 @@ int process_heredoc(t_token *heredoc_token)
         while (1)
         {
             line = readline("> ");
-            if (!line || strcmp(heredoc_token->next->value, line) == 0)
+            if (!line || ft_strncmp(heredoc_token->next->value, line, -1) == 0)
             {
                 free(line);
                 break;

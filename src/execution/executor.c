@@ -23,6 +23,48 @@ static char *find_path(t_env *env)
     return path;
 }
 
+char **env_arr(t_env *env_list)
+{
+    int list_len = 0;
+    t_env *temp = env_list;
+    while(temp)
+    {
+        temp = temp->next;
+        list_len++;
+    }
+    char **arr = malloc(sizeof(char *) * (list_len + 1));
+    if (!arr)
+    {
+        perror("malloc error");
+        return (NULL);
+    }
+    int i = 0;
+    while (env_list)
+    {
+        char *temp = ft_strjoin(env_list->key, "=");
+        if (!temp)
+        {
+            perror("malloc error");
+            free(arr);
+            return (NULL);
+        }
+        char *var = ft_strjoin(temp, env_list->value);
+        free(temp);
+        if (!var)
+        {
+            perror("malloc error");
+            free(arr);
+            return (NULL);
+        }
+        arr[i] = var;
+        env_list = env_list->next;
+        i++;
+    }
+    arr[i] = NULL;
+    return (arr);
+}
+
+
 int arr_len(char **cmds)
 {
     int i = 0;
@@ -116,14 +158,16 @@ void execute_cmd(t_command **cmd, t_env **env)
         }
         else if ((*cmd)->cmd[0] == '.')
         {
+            char **arr = env_arr(*env);
             if (access((*cmd)->cmd, F_OK | X_OK | R_OK) == 0)
-                execve((*cmd)->cmd, new_arr, NULL);
+                execve((*cmd)->cmd, new_arr, arr);
             else
             {
                 ft_putstr_fd("command not found : ", 2);
                 ft_putstr_fd((*cmd)->cmd, 2);
                 ft_putstr_fd("\n", 2);
             }
+            free_array(arr);
             free_array(new_arr);
             exit(127);
         }

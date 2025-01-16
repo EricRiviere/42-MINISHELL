@@ -75,7 +75,6 @@ t_env *init_env_list(char **env)
         }
         env++;
     }
-    add_env_variable(&env_list, "?", "0");
     return (env_list);
 }
 
