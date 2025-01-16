@@ -1,21 +1,12 @@
 #include "minishell.h"
 
-// void ctrl_c(int signal)
-// {
-//     if (signal == SIGINT)
-//     {
-//         printf("\nminishell> ");
-//     }
-// }
-int		g_signal;
-
-void	interactive_signals(void)
+void	parent_signals(void)
 {
-	signal(SIGINT, run_signint);
+	signal(SIGINT, output_signals);
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	non_interactive_signals(void)
+void	child_signals(void)
 {
 	signal(SIGINT, display_new_line);
 	signal(SIGQUIT, display_new_line);
@@ -23,14 +14,11 @@ void	non_interactive_signals(void)
 
 void	here_signals(void)
 {
-	g_signal = 0;
-	signal(SIGINT, set_heresign);
-	signal(SIGQUIT, set_heresign);
+	signal(SIGINT, SIG_DFL); 
+    signal(SIGQUIT, SIG_DFL);
 }
 
-extern int	g_signal;
-
-void	run_signint(int sig)
+void	output_signals(int sig)
 {
 	(void)sig;
 	rl_on_new_line();
@@ -44,9 +32,4 @@ void	display_new_line(int sig)
 	(void)sig;
 	printf("\n");
 	rl_on_new_line();
-}
-
-void	set_heresign(int sig)
-{
-	g_signal = sig;
 }

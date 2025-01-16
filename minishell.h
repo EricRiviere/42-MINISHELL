@@ -152,5 +152,11 @@ void get_echo(t_command **cmd);
 int get_cmd_num(t_command **cmd);
 //------------------ PIPES
 void execute_pipes(t_command **cmds, t_env **env);
+//------------------SIGNALS
+void	parent_signals(void);
+void	output_signals(int sig);
 void ctrl_c(int signal);
+void	display_new_line(int sig);
+void	child_signals(void);
+void	here_signals(void);
 #endif

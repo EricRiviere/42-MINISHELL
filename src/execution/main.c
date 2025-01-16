@@ -17,6 +17,7 @@ int main(int argc, char **argv, char **env)
 
     signal(SIGINT, ctrl_c);
     signal(SIGQUIT, SIG_IGN);
+    // parent_signals();
     (void)argv;
     if (argc != 1)
     {
@@ -27,6 +28,7 @@ int main(int argc, char **argv, char **env)
     while (1)
     {
         line = readline("minishell> ");
+        ///non_interactive_signals();
         if (!line)
             break;
         if (line)

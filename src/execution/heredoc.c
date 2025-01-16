@@ -88,9 +88,9 @@ int process_heredoc(t_token *heredoc_token)
 
     if (heredoc == 0)
     {
-        
+        // here_signals();
         signal(SIGINT, SIG_DFL); 
-
+        signal(SIGQUIT, SIG_DFL);
         close(redir[0]);
         while (1)
         {
@@ -107,9 +107,10 @@ int process_heredoc(t_token *heredoc_token)
         close(redir[1]);
         exit(0);
     }
-
-    
     signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    // child_signals();
+    
 
     close(redir[1]);
 
@@ -119,9 +120,9 @@ int process_heredoc(t_token *heredoc_token)
         close(redir[0]);
         return -1;
     }
-
-    
-    signal(SIGINT, SIG_DFL);
+    signal(SIGINT, ctrl_c);
+    signal(SIGQUIT, SIG_IGN);
+    // parent_signals();
 
     status = WEXITSTATUS(status);
     if (status != 0)
