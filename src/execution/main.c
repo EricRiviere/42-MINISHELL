@@ -59,7 +59,7 @@ int main(int argc, char **argv, char **env)
                 }
                 preprocess_tokens(&tkn_lst);
                 if (!get_status(0, 0))
-                        cu_env_var(&env_lst, "?", ft_itoa(0));
+                        cu_env_var(&env_lst, "?", 0);
                 cmd_list = commands(tkn_lst);
                 get_status(1, 0);
                 execute_pipes(cmd_list, &env_lst);

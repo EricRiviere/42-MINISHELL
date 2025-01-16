@@ -255,7 +255,10 @@ void execute_pipes(t_command **cmds, t_env **env)
             // Optionally wait for the child process
             waitpid(pid, &(*cmds)->status, 0);
             (*cmds)->status = WEXITSTATUS((*cmds)->status);
-            cu_env_var(env, "?", ft_itoa(get_status(1, (*cmds)->status)));
+            char *new_var = (ft_itoa(get_status(1, (*cmds)->status)));
+            cu_env_var(env, "?", new_var);
+            free(new_var);
+
         }
     }
 }

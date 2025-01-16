@@ -13,7 +13,7 @@ LDLIBS = -lreadline
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-DEBUG = -g #-fsanitize=address
+DEBUG = -g -fsanitize=address
 END = \033[m
 YELLOW = \033[33m
 
