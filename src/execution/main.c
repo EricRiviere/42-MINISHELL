@@ -7,8 +7,6 @@ void ctrl_c(int signal)
     }
 }
 
-
-
 int get_status(int flag, int value)
 {
     static int new;

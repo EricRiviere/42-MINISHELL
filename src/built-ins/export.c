@@ -108,7 +108,6 @@ void export_new_var(t_command **cmd, t_env **env)
                     cu_env_var(env, key, NULL);
             }
             free(key);
-            // cu_env_var(env, "?", ft_itoa(get_status(1, EXIT_SUCCESS)));
         }
         else
         {

@@ -73,11 +73,7 @@ void    manage_builtins(t_command *cmd, t_env **env)
     if (&cmd->cmd[0] == NULL)
         return ;
     else if (is_builtin(cmd) == 1)//ENV
-    {
-        // cmd->status = EXIT_SUCCESS;
-        // cu_env_var(env, "?", ft_itoa(cmd->status));
         print_enviroment(env);
-    }
     else if (is_builtin(cmd) == 2)//CD
         manage_cd(cmd, env);
     else if (is_builtin(cmd) == 3)//EXPORT
@@ -85,22 +81,9 @@ void    manage_builtins(t_command *cmd, t_env **env)
     else if (is_builtin(cmd) == 4)//UNSET
         delete_env_var(&cmd, env);
     else if (is_builtin(cmd) == 5)//PWD
-    {
-        cmd->status = EXIT_SUCCESS;
-        cu_env_var(env, "?", ft_itoa(cmd->status));
         printf_pwd(env);
-    }
     else if (is_builtin(cmd) == 6)//EXIT
         exit(0);
     else if (is_builtin(cmd) == 7)//ECHO
-    {
-        //printf("CMD->STATUS PRE ACTUALIZACION-----> %s\n", ft_itoa(cmd->status));
-        // printf("--> Valor de $? PRE -----> ");
-        //(*env)->value = ft_strdup("40");
         get_echo(cmd);
-        // printf("get status %d\n", get_status(1, 10));
-        //cu_env_var(env, "?", ft_itoa(get_status(1, 0)));
-        //printf("CMD->STATUS POST ACTUALIZACION-----> %s\n", ft_itoa(cmd->status));
-        //printf("--> Valor de $? POST -----> %s\n", get_env_value("?", *env));
-    }
 }
