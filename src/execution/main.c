@@ -1,11 +1,11 @@
 #include "minishell.h"
-void ctrl_c(int signal)
-{
-    if (signal == SIGINT)
-    {
-        printf("\nminishell> ");
-    }
-}
+// void ctrl_c(int signal)
+// {
+//     if (signal == SIGINT)
+//     {
+//         printf("\nminishell> ");
+//     }
+// }
 
 int main(int argc, char **argv, char **env)
 {
@@ -15,8 +15,8 @@ int main(int argc, char **argv, char **env)
     t_env   *env_lst;
     t_command **cmd_list;
 
-    signal(SIGINT, ctrl_c);
-    signal(SIGQUIT, SIG_IGN);
+    // signal(SIGINT, ctrl_c);
+    // signal(SIGQUIT, SIG_IGN);
     // parent_signals();
     (void)argv;
     if (argc != 1)
@@ -25,10 +25,11 @@ int main(int argc, char **argv, char **env)
         return (1);
     }
     env_lst = init_env_list(env);
+    parent_signals();
     while (1)
     {
+        // parent_signals();
         line = readline("minishell> ");
-        ///non_interactive_signals();
         if (!line)
             break;
         if (line)

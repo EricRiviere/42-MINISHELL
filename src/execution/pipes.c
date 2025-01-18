@@ -194,6 +194,7 @@ void execute_pipes(t_command **cmds, t_env **env)
 
         if (pid == 0) // Child process
         {
+            child_signals();
             // Redirect input if not the first command
             if (prev_fd != -1)
             {

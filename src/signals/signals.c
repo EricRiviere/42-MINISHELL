@@ -6,8 +6,15 @@ void	parent_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
+// void	child_signals(void)
+// {
+// 	signal(SIGINT, SIG_DFL);
+// 	signal(SIGQUIT, SIG_DFL);
+// }
+
 void	child_signals(void)
 {
+	printf("entrando a child signals");
 	signal(SIGINT, display_new_line);
 	signal(SIGQUIT, display_new_line);
 }
@@ -15,7 +22,7 @@ void	child_signals(void)
 void	here_signals(void)
 {
 	signal(SIGINT, SIG_DFL); 
-    signal(SIGQUIT, SIG_DFL);
+    signal(SIGQUIT, SIG_IGN);
 }
 
 void	output_signals(int sig)
