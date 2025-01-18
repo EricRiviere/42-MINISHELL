@@ -1,4 +1,20 @@
-#include "minishell.h"
+#include <signal.h>
+#include <sys/wait.h>
+#include <stdio.h>
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+
+void	output_signals(int sig)
+{
+	(void)sig;
+	rl_on_new_line();
+	printf("\n");
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
 
 void	parent_signals(void)
 {
@@ -28,18 +44,32 @@ void	here_signals(void)
     signal(SIGQUIT, SIG_IGN);
 }
 
-void	output_signals(int sig)
-{
-	(void)sig;
-	rl_on_new_line();
-	printf("\n");
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
+
 
 void	display_new_line(int sig)
 {
 	(void)sig;
 	printf("cortooooooooooooo\n");
 	rl_on_new_line();
+}
+
+int main()
+{
+    int id = fork();
+    int i = 0;
+    int status = 0;
+
+    parent_signals();
+    if (id == 0)
+    {
+        child_signals();
+        while (i < 5)
+        {
+            sleep(1000);
+        }
+        i++;
+    }
+    else
+        waitpid(id, &status, 0);
+
 }
