@@ -21,6 +21,7 @@ void	child_signals(void)
 
 void	here_signals(void)
 {
+	printf("entrando en senales de heredoc");
 	signal(SIGINT, SIG_DFL); 
     signal(SIGQUIT, SIG_IGN);
 }
