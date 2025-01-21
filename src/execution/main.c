@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include <termios.h>
 void ctrl_c(int signal)
 {
     if (signal == SIGINT)
@@ -15,6 +16,31 @@ int get_status(int flag, int value)
     return new;
 }
 
+void	term_init(void)
+{
+	struct termios	term;
+
+    tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag &= ~ECHOCTL;
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
+
+int	get_break_it(int flag, int value)
+{
+	static int	_break;
+
+	if (flag == 1)
+		_break = value;
+	return (_break);
+}
+
+void	break_it(int signal)
+{
+	if (signal == SIGINT)
+		get_break_it(1, 1);
+}
+
 int main(int argc, char **argv, char **env)
 {
     char    *line;
@@ -23,8 +49,8 @@ int main(int argc, char **argv, char **env)
     t_env   *env_lst;
     t_command **cmd_list;
 
-    signal(SIGINT, ctrl_c);
-    signal(SIGQUIT, SIG_IGN);
+    //signal(SIGINT, ctrl_c);
+    // signal(SIGQUIT, SIG_IGN);
     (void)argv;
     if (argc != 1)
     {
@@ -32,8 +58,13 @@ int main(int argc, char **argv, char **env)
         return (1);
     }
     env_lst = init_env_list(env);
+    // term_init();
+    parent_signals();
+
+    line = NULL;
     while (1)
     {
+        // printf("line=%s %p\n", line, line);
         line = readline("minishell> ");
         if (!line)
             break;
@@ -49,6 +80,7 @@ int main(int argc, char **argv, char **env)
             }
             if (tkn_lst)
             {
+                
                 curr_tkn = tkn_lst;
                 while (curr_tkn)
                 {
@@ -57,11 +89,11 @@ int main(int argc, char **argv, char **env)
                     expand_variables(curr_tkn, &env_lst);
                     curr_tkn = curr_tkn->next;
                 }
+                get_break_it(1, 0);
                 preprocess_tokens(&tkn_lst);
                 if (!get_status(0, 0))
                         cu_env_var(&env_lst, "?", 0);
                 cmd_list = commands(tkn_lst);
-                get_status(1, 0);
                 execute_pipes(cmd_list, &env_lst);
                 //print_commands(line, cmd_list);
                 //print_tokens(line, tkn_lst);

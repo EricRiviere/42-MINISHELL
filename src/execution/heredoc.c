@@ -1,6 +1,7 @@
 
 #include "minishell.h"
 
+
 int process_heredoc(t_token *heredoc_token)
 {
     int redir[2];
@@ -8,6 +9,10 @@ int process_heredoc(t_token *heredoc_token)
     int status;
     char *line;
 
+    signal(SIGINT, break_it);
+	signal(SIGQUIT, SIG_IGN);
+    if (get_break_it(0, 0))
+        return (130);
     status = 0;
     if (pipe(redir) == -1)
     {
@@ -26,6 +31,7 @@ int process_heredoc(t_token *heredoc_token)
 
     if (heredoc == 0) 
     {
+        signal(SIGINT, here_signals);
         close(redir[0]);
         while (1)
         {
@@ -40,9 +46,10 @@ int process_heredoc(t_token *heredoc_token)
             free(line);
         }
         close(redir[1]);
+        signal(SIGINT, SIG_DFL);
         exit(0);
     }
-
+    // signal(SIGINT, SIG_DFL);
     // Parent process
     close(redir[1]);
     if (waitpid(heredoc, &status, 0) == -1)
@@ -52,6 +59,10 @@ int process_heredoc(t_token *heredoc_token)
         return -1;
     }
 
+    // if (WIFEXITED((status)))
+    //     status = WEXITSTATUS(status);
+    // else
+    //     handle_signaled(&status, WTERMSIG(status));
     status = WEXITSTATUS(status);
     if (status != 0)
     {

@@ -155,6 +155,16 @@ int is_unique_builtin(t_command *cmd)
 // }
 
 
+void	handle_signaled(int *status, int signal)
+{
+	if (signal == 2)
+		printf("^C\n");
+	else if (signal == 3)
+		printf("Quit: (core dumped)\n");
+	*status = 128 + signal;
+}
+
+
 
 void execute_pipes(t_command **cmds, t_env **env)
 {
@@ -194,7 +204,10 @@ void execute_pipes(t_command **cmds, t_env **env)
 
         if (pid == 0) // Child process
         {
+            // child_signals();
             // Redirect input if not the first command
+            signal(SIGINT, exit);
+	        signal(SIGQUIT, exit);
             if (prev_fd != -1)
             {
                 if (dup2(prev_fd, STDIN_FILENO) == -1)
@@ -243,6 +256,7 @@ void execute_pipes(t_command **cmds, t_env **env)
         }
         else // Parent process
         {
+            // parent_signals();
             if (prev_fd != -1)
                 close(prev_fd); // Close the read end of the previous pipe
 
@@ -254,6 +268,10 @@ void execute_pipes(t_command **cmds, t_env **env)
 
             // Optionally wait for the child process
             waitpid(pid, &(*cmds)->status, 0);
+            if (WIFEXITED((*cmds)->status))
+               (*cmds)->status = WEXITSTATUS((*cmds)->status);
+            else
+                handle_signaled(&(*cmds)->status, WTERMSIG((*cmds)->status));
             (*cmds)->status = WEXITSTATUS((*cmds)->status);
             char *new_var = (ft_itoa(get_status(1, (*cmds)->status)));
             cu_env_var(env, "?", new_var);

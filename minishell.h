@@ -152,8 +152,25 @@ void get_echo(t_command *cmd);
 int get_cmd_num(t_command **cmd);
 //------------------ PIPES
 void execute_pipes(t_command **cmds, t_env **env);
+//--------------------SIGNALS
+void	parent_signals(void);
+void	output_signals(int sig);
+void    ctrl_c(int signal);
+void	child_signals(void);
+void	here_signals(int sig);
+void	sigquit_signals(int sig);
 
 
 
 int get_status(int flag, int value);
+
+
+
+
+
+
+
+int	get_break_it(int flag, int value);
+
+void	break_it(int signal);
 #endif
