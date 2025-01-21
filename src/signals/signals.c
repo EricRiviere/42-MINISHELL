@@ -1,5 +1,14 @@
 #include "minishell.h"
 
+void	handle_signaled(int *status, int signal)
+{
+	if (signal == 2)
+		printf("^C\n");
+	else if (signal == 3)
+		printf("Quit: (core dumped)\n");
+	*status = 128 + signal;
+}
+
 void	parent_signals(void)
 {
 	signal(SIGINT, output_signals);
