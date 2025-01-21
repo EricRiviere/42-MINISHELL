@@ -174,6 +174,7 @@ void execute_cmd(t_command **cmd, t_env **env)
         char *path = find_path(*env);
         char **paths = ft_split(path, ':');
         i = 0;
+        char **arr = env_arr(*env);
         while (paths[i])
         {
             char *tmp =  ft_strjoin(paths[i], "/");
@@ -182,7 +183,7 @@ void execute_cmd(t_command **cmd, t_env **env)
                 free(tmp);
             if (access(full_path, F_OK | X_OK | R_OK) == 0)
             {
-                execve(full_path, new_arr, NULL);
+                execve(full_path, new_arr, arr);
                 free(full_path);
                 break;
             }
