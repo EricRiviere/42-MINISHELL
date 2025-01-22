@@ -1,5 +1,18 @@
 #include "minishell.h"
 
+char *return_error(char *str)
+{
+    perror(str);
+    return (NULL);
+}
+
+void	double_free_char(char *s1, char *s2)
+{
+	if (!s1 || !s2)
+		return ;
+	free(s1);
+	free(s2);
+}
 char    *ft_strndup(const char *str, size_t len)
 {
     char    *dup;

@@ -118,6 +118,7 @@ t_token *manage_word(t_args *args);
 void skip_spaces(const char *line, int *i, int *spaces);
 int process_token(t_args *args);
 t_token *tokenize(char *line);
+char *return_error(char *str);
 //------------------ SINTAXIS FUNCTIONS
 int syntax_check(t_token *tkn_lst);
 //------------------ EXPANSION FUNCTIONS
@@ -159,7 +160,7 @@ void	parent_signals(void);
 void	output_signals(int sig);
 void	here_signals(int sig);
 void	handle_signaled(int *status, int signal);
-
+void	double_free_char(char *s1, char *s2);
 
 int get_status(int flag, int value);
 
