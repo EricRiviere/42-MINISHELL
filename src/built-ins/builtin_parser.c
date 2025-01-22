@@ -147,7 +147,7 @@ void    manage_builtins(t_command *cmd, t_env **env)
     else if (is_builtin(cmd) == 5)//PWD
         printf_pwd(env);
     else if (is_builtin(cmd) == 6)//EXIT
-        exit(0);
+        ft_exit(cmd);
     else if (is_builtin(cmd) == 7)//ECHO
         get_echo(cmd);
 }

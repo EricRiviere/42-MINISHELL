@@ -150,6 +150,8 @@ void    printf_pwd(t_env **env);
 //------------------ ECHO FUNCTION
 void get_echo(t_command *cmd);
 int get_cmd_num(t_command **cmd);
+//------------------ EXIT
+void	ft_exit(t_command *cmd);
 //------------------ PIPES
 void execute_pipes(t_command **cmds, t_env **env);
 //--------------------SIGNALS
