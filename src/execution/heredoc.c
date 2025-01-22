@@ -64,6 +64,7 @@ int process_heredoc(t_token *heredoc_token)
     // else
     //     handle_signaled(&status, WTERMSIG(status));
     status = WEXITSTATUS(status);
+    get_status(1,status);
     if (status != 0)
     {
         close(redir[0]);

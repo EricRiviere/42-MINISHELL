@@ -154,18 +154,6 @@ int is_unique_builtin(t_command *cmd)
 //     }
 // }
 
-
-void	handle_signaled(int *status, int signal)
-{
-	if (signal == 2)
-		printf("^C\n");
-	else if (signal == 3)
-		printf("Quit: (core dumped)\n");
-	*status = 128 + signal;
-}
-
-
-
 void execute_pipes(t_command **cmds, t_env **env)
 {
     int i;
@@ -272,11 +260,9 @@ void execute_pipes(t_command **cmds, t_env **env)
                (*cmds)->status = WEXITSTATUS((*cmds)->status);
             else
                 handle_signaled(&(*cmds)->status, WTERMSIG((*cmds)->status));
-            (*cmds)->status = WEXITSTATUS((*cmds)->status);
             char *new_var = (ft_itoa(get_status(1, (*cmds)->status)));
             cu_env_var(env, "?", new_var);
             free(new_var);
-
         }
     }
 }

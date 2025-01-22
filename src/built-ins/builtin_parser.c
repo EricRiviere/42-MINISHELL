@@ -1,15 +1,25 @@
 #include "minishell.h"
 
-void    print_declared_env(t_env **env_list)
+void print_declared_env(t_env **env_list)
 {
     t_env *curr_var;
 
+    if (!env_list || !(*env_list))
+        return;
     curr_var = *env_list;
-    while(curr_var)
+    while (curr_var)
     {
-        if (ft_strncmp(curr_var->key, "?", -1) == 0)
+        if (!curr_var->key)  // Evita acceder a NULL
+        {
             curr_var = curr_var->next;
-        else if (curr_var->value == NULL)
+            continue;
+        }
+        if (ft_strncmp(curr_var->key, "?", -1) == 0)
+        {
+            curr_var = curr_var->next;
+            continue;
+        }
+        if (!curr_var->value)
             printf("declare -x %s\n", curr_var->key);
         else if (curr_var->value[0] == '\0')
             printf("declare -x %s=\"\"\n", curr_var->key);
@@ -19,20 +29,70 @@ void    print_declared_env(t_env **env_list)
     }
 }
 
-void    print_enviroment(t_env **env_list)
+void print_enviroment(t_env **env_list)
 {
     t_env *curr_var;
 
+    if (!env_list || !(*env_list))
+        return;
     curr_var = *env_list;
-    while(curr_var)
+    while (curr_var)
     {
-        if (ft_strncmp(curr_var->key, "?", -1) == 0)
+        if (!curr_var->key || !curr_var->value)
+        {
             curr_var = curr_var->next;
-        else if (curr_var->value != NULL && curr_var->value[0] != '\0')
-            printf("%s=%s\n", curr_var->key, curr_var->value);
+            continue;
+        }
+        if (ft_strncmp(curr_var->key, "?", -1) == 0)
+        {
+            curr_var = curr_var->next;
+            continue;
+        }
+        printf("%s=%s\n", curr_var->key, curr_var->value);
         curr_var = curr_var->next;
     }
 }
+
+
+// void    print_declared_env(t_env **env_list)
+// {
+//     t_env *curr_var;
+
+//     if (!env_list || !(*env_list))
+//     return;
+
+//     curr_var = *env_list;
+//     while(curr_var)
+//     {
+//         if (ft_strncmp(curr_var->key, "?", -1) == 0)
+//             curr_var = curr_var->next;
+//         else if (curr_var->value == NULL)
+//             printf("declare -x %s\n", curr_var->key);
+//         else if (curr_var->value[0] == '\0')
+//             printf("declare -x %s=\"\"\n", curr_var->key);
+//         else
+//             printf("declare -x %s=\"%s\"\n", curr_var->key, curr_var->value);
+//         curr_var = curr_var->next;
+//     }
+// }
+
+// void    print_enviroment(t_env **env_list)
+// {
+//     t_env *curr_var;
+
+//     if (!env_list || !(*env_list))
+//     return;
+
+//     curr_var = *env_list;
+//     while(curr_var)
+//     {
+//         if (ft_strncmp(curr_var->key, "?", -1) == 0)
+//             curr_var = curr_var->next;
+//         else if (curr_var->value != NULL && curr_var->value[0] != '\0')
+//             printf("%s=%s\n", curr_var->key, curr_var->value);
+//         curr_var = curr_var->next;
+//     }
+// }
 
 int is_builtin(t_command *cmd)
 {

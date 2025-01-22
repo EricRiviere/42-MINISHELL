@@ -64,6 +64,7 @@ int main(int argc, char **argv, char **env)
     line = NULL;
     while (1)
     {
+        parent_signals();
         // printf("line=%s %p\n", line, line);
         line = readline("minishell> ");
         if (!line)
