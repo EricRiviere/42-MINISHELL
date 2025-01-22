@@ -1,13 +1,5 @@
 #include "minishell.h"
-#include <termios.h>
-// void ctrl_c(int signal)
-// {
-//     if (signal == SIGINT)
-//     {
-//         printf("\n");
-//     }
-// }
-//podrimos hacer macro para darle un nuevo nombre a 1 o 0 en el status
+
 int get_status(int flag, int value)
 {
     static int new;
@@ -15,16 +7,6 @@ int get_status(int flag, int value)
         new = value;
     return new;
 }
-
-// void	term_init(void)
-// {
-// 	struct termios	term;
-
-//     tcgetattr(STDIN_FILENO, &term);
-// 	term.c_lflag &= ~ECHOCTL;
-//     tcsetattr(STDIN_FILENO, TCSANOW, &term);
-// }
-
 
 int	get_break_it(int flag, int value)
 {
