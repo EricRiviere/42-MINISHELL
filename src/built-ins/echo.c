@@ -1,24 +1,43 @@
 #include "minishell.h"
 
+// static int check_flag(t_command *cmd)
+// {
+//     int i;
+
+//     i = 0;
+
+//     // Verificamos que cmd y cmd->args existan y no sean NULL
+//     if (!cmd || !cmd->args || cmd->args[0] == NULL)
+//         return (0);
+
+//     // Verificamos si el primer argumento es "-n"
+//     if (ft_strncmp(cmd->args[0], "-n", -1) == 0)
+//     {
+//         // Comprobamos si hay múltiples "-n" consecutivos
+//         while (cmd->args[i] && ft_strncmp(cmd->args[i], "-n", -1) == 0)
+//             i++;
+//         return (i);
+//     }
+//     return (0);
+// }
 static int check_flag(t_command *cmd)
 {
     int i;
+    int j;
 
     i = 0;
-
-    // Verificamos que cmd y cmd->args existan y no sean NULL
-    if (!cmd || !cmd->args || cmd->args[0] == NULL)
+    if (!cmd || !cmd->args || cmd->args[0] == NULL)    // Verificamos que cmd y cmd->args existan y no sean NULL
         return (0);
-
-    // Verificamos si el primer argumento es "-n"
-    if (ft_strncmp(cmd->args[0], "-n", -1) == 0)
+    while (cmd->args[i] && cmd->args[i][0] == '-' && cmd->args[i][1] == 'n')    // Recorremos todos los argumentos que empiezan por "-n"
     {
-        // Comprobamos si hay múltiples "-n" consecutivos
-        while (cmd->args[i] && ft_strncmp(cmd->args[i], "-n", -1) == 0)
-            i++;
-        return (i);
+        j = 1;
+        while (cmd->args[i][j] == 'n')// Verificamos que todos los caracteres después de '-' sean 'n'
+            j++;
+        if (cmd->args[i][j] != '\0')  // Si hay algún caracter diferente a 'n', detener
+            break;
+        i++;
     }
-    return (0);
+    return (i);
 }
 
 void get_echo(t_command *cmd)

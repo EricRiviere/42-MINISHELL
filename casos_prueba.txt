@@ -1,3 +1,240 @@
+Minishell 42 - Test Cases
+
+
+---> 1. Compilation
+
+
+Run make -n and check for -Wall -Wextra -Werror flags.
+
+Ensure no errors or warnings during compilation.
+
+Verify that the Makefile does not re-link.
+
+
+---> 2. Simple Commands & Global Variables
+
+
+Test: /bin/ls → Expect: List of files
+
+Test: `` (empty input) → Expect: No output
+
+Test:      (only spaces) → Expect: No output
+
+Test: \t (only tabs) → Expect: No output
+
+Test: ls → Expect: List of files
+
+Test: pwd → Expect: Current directory path
+
+
+---> 3. Arguments
+
+
+Test: /bin/ls -la → Expect: Detailed list of files
+
+Test: /bin/cat src/main.c → Expect: Contents of main.c
+
+Test: /bin/echo hello world → Expect: hello world
+
+Test: ls -l -a -h → Expect: Detailed list of files with human-readable sizes
+
+
+---> 4. Echo
+
+
+Test: echo Hello, World! → Expect: Hello, World!
+
+Test: echo -n No newline → Expect: No newline (no newline at the end)
+
+Test: echo "Hello, World!" → Expect: Hello, World!
+
+Test: echo -nnnnn -nnnnnnnn Hello → Expect: Hello with no newline before
+
+
+---> 5. Exit
+
+
+Test: exit → Expect: Shell exits
+
+Test: exit 0 → Expect: Shell exits with code 0
+
+Test: exit 42 → Expect: Shell exits with code 42
+
+Test: exit 4 2 → Expect: "too many arguments" error (no exit);
+
+Test: exit 42hola or hola → Expect: "numeric argument required" error;
+
+Test: exit -1 → Expect: Shell exits with code 255
+
+
+---> 6. Return Value of a Process
+
+
+Test: /bin/ls && echo $? → Expect: 0 if successful
+
+Test: /bin/false && echo $? → Expect: 1
+
+Test: /bin/ls non_existing_file && echo $? → Expect: 2
+
+Test: false; echo $? → Expect: 1
+
+
+---> 7. Signals
+
+
+Test: Press ctrl-C in an empty prompt → Expect: New prompt line
+
+Test: Press ctrl-\ in an empty prompt → Expect: Nothing
+
+Test: Press ctrl-D in an empty prompt → Expect: Shell exits
+
+Test: Type a command and press ctrl-C → Expect: Command cancelled (130)
+
+Test: Type a command and press ctrl-D → Expect: Command cancelled (0)
+
+Test: Press ctrl-Z during execution → Expect: Process suspended (148)
+
+
+---> 8. Double Quotes
+
+
+Test: echo "hello world" → Expect: hello world
+
+Test: echo "* $USER $TESTER $DISPLAY *" → Expect: * user_expansion  display_expansion *
+
+Test: echo "This is a test" → Expect: This is a test
+
+Test: echo "Quotes with $USER" → Expect: Quotes with username
+
+
+---> 9. Single Quotes
+
+
+Test: echo '$USER' → Expect: $USER
+
+Test: echo 'hello world' → Expect: hello world
+
+Test: echo 'echo inside quotes' → Expect: echo inside quotes
+
+Test: echo 'Single quotes with spaces' → Expect: Single quotes with spaces
+
+
+---> 10. Environment Variables
+
+
+Test: env → Expect: List of environment variables
+
+Test: export VAR=test && env → Expect: VAR=test
+
+Test: unset VAR && env → Expect: VAR not present
+
+Test: echo $PATH → Expect: System PATH variable
+
+Test: export HOME=/tmp && echo $HOME → Expect: /tmp
+
+
+---> 11. Built-ins
+
+
+Test: cd /usr && pwd → Expect: /usr
+
+Test: pwd → Expect: Current directory
+
+Test: env → Expect: Environment variables
+
+Test: export TEST_VAR=42 && echo $TEST_VAR → Expect: 42
+
+Test: unset TEST_VAR && echo $TEST_VAR → Expect: Empty line
+
+Test: cd .. && pwd → Expect: Parent directory
+
+
+---> 12. Relative Path Execution
+
+
+Test: ./minishell → Expect: Minishell starts
+
+Test: ./minishell → Expect: Minishell starts
+
+Test: ./minishell → Expect: Minishell starts
+
+Test: exit with differents status codes && echo $? → Expect: exit with correct status code
+
+
+---> 13. Environment Path
+
+
+Test: ls → Expect: List of files
+
+Test: wc src/main.c → Expect: Word count of file
+
+Test: awk '{print $1}' src/main.c → Expect: First column of file
+
+Test: unset PATH && ls → Expect: Command not found
+
+Test: export PATH="/bin:/usr/bin" && ls → Expect: List of files
+
+Test: echo $PATH → Expect: /bin:/usr/bin
+
+
+---> 14. Redirection
+
+
+Test: echo hello > file.txt → Expect: File with hello
+
+Test: cat < file.txt → Expect: hello
+
+Test: echo append >> file.txt → Expect: File with append
+
+Test: cat << EOF → Expect: Interactive input
+
+Test: > file.txt ls → Expect: File with list of files
+
+Test: < non_existing_file cat → Expect: Error message
+
+
+---> 15. Pipes
+
+
+Test: ls | wc -l → Expect: Number of files
+
+Test: cat file.txt | grep hello → Expect: Lines with hello
+
+Test: ls | grep .c | wc -l → Expect: Number of .c files
+
+Test: echo "error" | ls non_existing_file → Expect: Error message
+
+Test: ls | cat > output.txt → Expect: Output saved in file
+
+Test: ls | sort | uniq → Expect: Unique sorted list
+
+
+---> 16. History & Navigation
+
+
+Test: Run a command and press Up → Expect: Previous command
+
+Test: Press Down → Expect: Next command
+
+Test: Run an invalid command → Expect: Error message
+
+Test: Long command → Expect: Execute properly
+
+
+---> 17. Go Crazy Tests
+
+
+Test: cat | cat | ls → Expect: List of files
+
+Test: Invalid commands → Expect: Error messages
+
+Test: cat << EOF | wc -l → Expect: Line count
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 Categoría: Compilación
 
 Test: Ejecutar make sin errores.

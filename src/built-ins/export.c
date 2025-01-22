@@ -112,7 +112,8 @@ void export_new_var(t_command **cmd, t_env **env)
         else
         {
             ft_putstr_fd("minishell: export: not a valid identifier\n", 2);
-            cu_env_var(env, "?", ft_itoa(get_status(1, EXIT_FAILURE)));
+            char  *val = ft_itoa(get_status(1, EXIT_FAILURE));
+            cu_env_var(env, "?", val);
         }
         i++; 
     } 

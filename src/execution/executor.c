@@ -173,6 +173,11 @@ void execute_cmd(t_command **cmd, t_env **env)
         }
         char *path = find_path(*env);
         char **paths = ft_split(path, ':');
+        if (!paths)
+        {
+            free_array(new_arr);
+            exit(127);
+        }
         i = 0;
         char **arr = env_arr(*env);
         while (paths[i])
