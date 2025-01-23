@@ -1,45 +1,98 @@
+
 NAME = minishell
 
+# Directorios
 LSRC = ./src
-
 INCLUDE = .
+OBJDIR = ./obj
+LIBFT_DIR = libft
 
-SRCS = $(LSRC)/parser/env.c $(LSRC)/parser/expansion.c $(LSRC)/parser/expansion_utils.c $(LSRC)/execution/main.c $(LSRC)/syntax_manager/syntax.c $(LSRC)/parser/tokenize.c $(LSRC)/parser/tokenize_utils_1.c $(LSRC)/parser/tokenize_utils_2.c $(LSRC)/execution/utils.c $(LSRC)/parser/command_tokens.c $(LSRC)/parser/command_init.c $(LSRC)/parser/command_exec.c $(LSRC)/parser/command_free.c $(LSRC)/execution/executor.c $(LSRC)/execution/pipes.c $(LSRC)/built-ins/builtin_parser.c $(LSRC)/built-ins/export.c $(LSRC)/built-ins/export_utils.c $(LSRC)/built-ins/unset.c $(LSRC)/built-ins/ch_dir.c $(LSRC)/built-ins/pwd.c $(LSRC)/built-ins/echo.c $(LSRC)/built-ins/exit.c $(LSRC)/execution/heredoc.c $(LSRC)/test/print_commands.c $(LSRC)/test/print_tokens.c $(LSRC)/signals/signals.c $(LSRC)/signals/signals_utils.c
-OBJS = $(SRCS:.c=.o)
+
+END = \033[0m
+GREEN = \033[32m
+YELLOW = \033[33m
+BLUE = \033[34m
+RED = \033[31m
+
+
+SRCS = \
+    $(LSRC)/parser/env.c \
+    $(LSRC)/parser/expansion.c \
+    $(LSRC)/parser/expansion_utils.c \
+    $(LSRC)/execution/main.c \
+    $(LSRC)/syntax_manager/syntax.c \
+    $(LSRC)/parser/tokenize.c \
+    $(LSRC)/parser/tokenize_utils_1.c \
+    $(LSRC)/parser/tokenize_utils_2.c \
+    $(LSRC)/execution/utils.c \
+    $(LSRC)/parser/command_tokens.c \
+    $(LSRC)/parser/command_init.c \
+    $(LSRC)/parser/command_exec.c \
+    $(LSRC)/parser/command_free.c \
+    $(LSRC)/execution/executor.c \
+    $(LSRC)/execution/pipes.c \
+    $(LSRC)/built-ins/builtin_parser.c \
+    $(LSRC)/built-ins/export.c \
+    $(LSRC)/built-ins/export_utils.c \
+    $(LSRC)/built-ins/unset.c \
+    $(LSRC)/built-ins/ch_dir.c \
+    $(LSRC)/built-ins/pwd.c \
+    $(LSRC)/built-ins/echo.c \
+    $(LSRC)/built-ins/exit.c \
+    $(LSRC)/execution/heredoc.c \
+    $(LSRC)/test/print_commands.c \
+    $(LSRC)/test/print_tokens.c \
+    $(LSRC)/signals/signals.c \
+    $(LSRC)/signals/signals_utils.c
+
+OBJS = $(SRCS:$(LSRC)/%.c=$(OBJDIR)/%.o)
+
 
 CFLAGS = -Wall -Wextra -Werror -I$(LSRC) -I$(INCLUDE) -I/usr/include
 LDFLAGS = -L/usr/lib
 LDLIBS = -lreadline
-LIBFT_DIR = libft
+DEBUG = -g -fsanitize=address
+
+
 LIBFT = $(LIBFT_DIR)/libft.a
 
-DEBUG = -g -fsanitize=address
-END = \033[m
-YELLOW = \033[33m
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT)
-	@echo "\n$(YELLOW)Minishell in the oven...$(END)"
-	$(CC)  $(DEBUG) $(LDFLAGS) $(OBJS) $(LIBFT) $(LDLIBS) -o $(NAME)
 
-%.o: %.c minishell.h libft/libft.h Makefile
+$(NAME): $(OBJS) $(LIBFT) Makefile
+	@echo "\n$(BLUE)Linking $(NAME)...$(END)"
+	@$(CC) $(DEBUG) $(LDFLAGS) $(OBJS) $(LIBFT) $(LDLIBS) -o $(NAME)
+	@echo "$(GREEN)$(NAME) built successfully!$(END)"
+
+# Crear objetos
+$(OBJDIR)/%.o: $(LSRC)/%.c | $(OBJDIR)
 	@$(CC) $(DEBUG) $(CFLAGS) -c $< -o $@
+	@printf "$(YELLOW)Compiling $<... \r$(END)"
+
+# Crear directorio de objetos
+$(OBJDIR):
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(dir $(OBJS))
+
 
 $(LIBFT):
-	@echo "\n$(YELLOW)Construyendo libft...$(END)"
-	@make -C $(LIBFT_DIR)
+	@make -C $(LIBFT_DIR) --no-print-directory
+
 
 clean:
-	@echo "\n$(YELLOW)Limpiando archivos...$(END)"
-	@rm -f $(OBJS)
-	@make -C $(LIBFT_DIR) clean
+	@echo "$(RED)Cleaning object files...$(END)"
+	@rm -rf $(OBJDIR)
+	@make -C $(LIBFT_DIR) clean --no-print-directory
+
 
 fclean: clean
-	@echo "\n$(YELLOW)Limpiando todo...$(END)"
+	@echo "$(RED)Cleaning everything...$(END)"
 	@rm -f $(NAME)
-	@make -C $(LIBFT_DIR) fclean
+	@make -C $(LIBFT_DIR) fclean --no-print-directory
+
 
 re: fclean all
 
-.PHONY: all clean fclean re submodule
+
+.PHONY: all clean fclean re
