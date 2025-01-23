@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eriviere <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/23 17:56:47 by eriviere          #+#    #+#             */
+/*   Updated: 2025/01/23 17:56:51 by eriviere         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 //readline --> compilar con -lreadline
@@ -151,7 +163,19 @@ void	free_redir(t_redir *redir);
 void	free_single_cmd(t_command *cmd);
 void	free_cmd_list(t_command **cmd_list);
 //------------------ EXECUTION FUNCTIONS
-void execute_cmd(t_command **cmd, t_env **env);
+char	*find_path(t_env *env);
+void	handle_absolute_path(t_command **cmd, char **new_arr);
+void	handle_relative_path(t_command **cmd, t_env **env, char **new_arr);
+char	*build_full_path(char *dir, char *cmd);
+void	execute_path(t_command **cmd, t_env **env, char **new_arr);
+int	arr_len(char **cmds);
+char	**new_args(t_command **cmd);
+void	free_array(char **arr);
+char	**create_env_array(t_env *env_list, int list_len);
+char	**env_arr(t_env *env_list);
+int	get_cmd_num(t_command **cmd);
+void	cmd_not_found(t_command **cmd, char **new_arr);
+void	execute_cmd(t_command **cmd, t_env **env);
 //------------------ HEREDOC
 int process_heredoc(t_token *heredoc_token);
 //------------------ BUILTINS
@@ -167,6 +191,7 @@ char	*extract_value(char *arg);
 void	process_argument(char *arg, t_env **env);
 void	export_new_var(t_command **cmd, t_env **env);
 void delete_env_var(t_command **cmd, t_env **env);
+void	print_declared_env(t_env **env_list);
 //------------------ CD FUNCTION
 void change_dir(t_command *cmd, t_env **env);
 //------------------ PWD FUNCTION

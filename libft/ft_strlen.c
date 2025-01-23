@@ -6,7 +6,7 @@
 /*   By: gualvare <gualvare@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 12:12:59 by gualvare          #+#    #+#             */
-/*   Updated: 2024/06/26 12:13:38 by gualvare         ###   ########.fr       */
+/*   Updated: 2025/01/23 17:42:38 by eriviere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 size_t	ft_strlen(const char *str)
 {
 	size_t	i;
-	
+
 	if (!str)
 		return (0);
 	i = 0;
