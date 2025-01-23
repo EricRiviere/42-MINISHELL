@@ -105,6 +105,15 @@ typedef struct s_expand_args {
     int start;
 } t_expand_args;
 //------------------
+//------------------ PIPE STRUCT
+typedef struct s_pipe_data
+{
+    int cmd_num;
+    int pipe_fd[2];
+    int prev_fd;
+    pid_t pid;
+} t_pipe_data;
+//------------------
 //------------------ UTILS FUNCTIONS
 char    *ft_strndup(const char *str, size_t len);
 int is_space(char c);
