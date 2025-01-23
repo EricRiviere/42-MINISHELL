@@ -78,7 +78,6 @@ void	cu_env_var(t_env **env, char *key, char *value)
 	}
 }
 
-
 void	print_declared_env(t_env **env_list)
 {
 	t_env	*curr_var;

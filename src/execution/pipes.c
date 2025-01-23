@@ -6,7 +6,7 @@
 /*   By: eriviere <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 19:02:45 by eriviere          #+#    #+#             */
-/*   Updated: 2025/01/23 19:09:23 by eriviere         ###   ########.fr       */
+/*   Updated: 2025/01/23 20:00:49 by gualvare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,3 +106,30 @@ void	execute_pipes(t_command **cmds, t_env **env)
 		i++;
 	}
 }
+
+// void	execute_pipes(t_command **cmds, t_env **env)
+// {
+// 	t_pipe_data	p_data;
+
+// 	p_data.cmd_num = get_cmd_num(cmds);
+// 	p_data.prev_fd = -1;
+// 	if (p_data.cmd_num <= 0 || cmds == NULL)
+// 		return ;
+// 	if (p_data.cmd_num == 1 && is_unique_builtin(cmds[0]))
+// 	{
+// 		execute_cmd(&cmds[0], env);
+// 		return ;
+// 	}
+// 	while (p_data.cmd_num--)
+// 	{
+// 		if (p_data.cmd_num && pipe(p_data.pipe_fd) == -1)
+// 			exit(EXIT_FAILURE);
+// 		p_data.pid = fork();
+// 		if (p_data.pid == -1)
+// 			exit(EXIT_FAILURE);
+// 		if (p_data.pid == 0)
+// 			child_process(cmds, env, &p_data, p_data.cmd_num);
+// 		else
+// 			parent_process(&p_data, cmds, env, p_data.cmd_num);
+// 	}
+// }
