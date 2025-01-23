@@ -126,23 +126,46 @@ char *ft_strjoin_free(char *s1, char *s2);
 int is_valid_env_char(char c);
 char *expand_value(t_token *token, t_env **env_lst);
 void expand_variables(t_token *token, t_env **env_lst);
+void	handle_literal_text(t_expand_args *args);
+void	handle_variable_expansion(t_expand_args *args);
 //------------------ COMMAND FUNCTIONS
-t_command **commands(t_token *tkn_lst);
-void preprocess_tokens(t_token **tkn_lst);
-void free_cmd_list(t_command **cmd_list);
+void	concat_tokens(t_token **curr, t_token **prev);
+void	preprocess_tokens(t_token **tkn_lst);
+void	manage_redirection_cmd(t_token **curr_tkn, t_redir *redir,
+		int *op_index);
+void	manage_word_quote_cmd(t_command *cmd, t_token **curr_tkn,
+		int *arg_index);
+void	process_tokens(t_command *cmd, t_redir *redir, t_token **curr_tkn);
+t_command	*allocate_command_resources(void);
+t_command	*init_command(void);
+void	add_redirection(t_redir *redir, t_token *curr_tkn, int *op_index);
+void	close_fd_if_open(int *fd);
+int	process_redirections(t_command *cmd, t_redir *redir);
+int	process_input_fd(t_command *cmd, const char *file);
+int	process_output_fd(t_command *cmd, const char *file);
+int	process_append_fd(t_command *cmd, const char *file);
+void	free_failed_commands(t_command **cmd_list, int cmd_index);
+void	free_command_resources(t_command *cmd);
+t_command	**commands(t_token *tkn_lst);
+void	free_redir(t_redir *redir);
+void	free_single_cmd(t_command *cmd);
+void	free_cmd_list(t_command **cmd_list);
+//------------------ EXECUTION FUNCTIONS
 void execute_cmd(t_command **cmd, t_env **env);
-//------------------ PRINT FUNCTIONS
-void print_commands(char *line, t_command **cmd_list);
-void print_tokens(char *line, t_token *tkn_lst);
 //------------------ HEREDOC
 int process_heredoc(t_token *heredoc_token);
 //------------------ BUILTINS
 void    manage_builtins(t_command *cmd, t_env **env);
 int is_builtin(t_command *cmd);
 //------------------ EXPORT - UNSET FUNCTIONS
-t_env *get_var(t_env **env, char *key);
-void    cu_env_var(t_env **env, char *key, char *value);
-void export_new_var(t_command **cmd, t_env **env);
+int	is_valid_key(char c);
+t_env	*get_var(t_env **env, char *key);
+void	add_env_variable_with_null(t_env **env_list, char *key);
+void	cu_env_var(t_env **env, char *key, char *value);
+char	*extract_key(char *arg);
+char	*extract_value(char *arg);
+void	process_argument(char *arg, t_env **env);
+void	export_new_var(t_command **cmd, t_env **env);
 void delete_env_var(t_command **cmd, t_env **env);
 //------------------ CD FUNCTION
 void change_dir(t_command *cmd, t_env **env);
@@ -155,22 +178,16 @@ int get_cmd_num(t_command **cmd);
 void	ft_exit(t_command *cmd);
 //------------------ PIPES
 void execute_pipes(t_command **cmds, t_env **env);
-//--------------------SIGNALS
+//------------------ SIGNALS
 void	parent_signals(void);
 void	output_signals(int sig);
 void	here_signals(int sig);
 void	handle_signaled(int *status, int signal);
 void	double_free_char(char *s1, char *s2);
-
 int get_status(int flag, int value);
-
-
-
-
-
-
-
 int	get_break_it(int flag, int value);
-
 void	break_it(int signal);
+//------------------ DEBUG
+void	print_tokens(char *line, t_token *tkn_lst);
+void	print_commands(char *line, t_command **cmd_list);
 #endif

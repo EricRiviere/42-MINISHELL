@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eriviere <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/23 15:18:49 by eriviere          #+#    #+#             */
+/*   Updated: 2025/01/23 15:19:27 by eriviere         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_numeric_arg(char *arg)
@@ -21,20 +33,20 @@ void	ft_exit(t_command *cmd)
 	int	exit_code;
 
 	printf("exit\n");
-	if (!cmd->args[0])// Caso sin argumentos -> Salir con código 0
+	if (!cmd->args[0])
 		exit(0);
-	if (cmd->args[1])// Caso más de un argumento
+	if (cmd->args[1])
 	{
 		ft_putstr_fd("exit: too many arguments\n", 2);
-		return;
+		return ;
 	}
-	if (!is_numeric_arg(cmd->args[0]))// Verificar si el argumento no es numérico
+	if (!is_numeric_arg(cmd->args[0]))
 	{
 		ft_putstr_fd("exit: numeric argument required\n", 2);
 		exit(2);
 	}
-	exit_code = ft_atoi(cmd->args[0]);// Convertir argumento a entero
-	exit_code %= 256;// Manejo de overflow de 8 bits
+	exit_code = ft_atoi(cmd->args[0]);
+	exit_code %= 256;
 	if (exit_code < 0)
 		exit_code += 256;
 	exit(exit_code);

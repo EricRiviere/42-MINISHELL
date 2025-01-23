@@ -4,7 +4,7 @@ LSRC = ./src
 
 INCLUDE = .
 
-SRCS = $(LSRC)/parser/env.c $(LSRC)/parser/expansion.c $(LSRC)/execution/main.c $(LSRC)/syntax_manager/syntax.c $(LSRC)/parser/tokenize.c $(LSRC)/parser/tokenize_utils_1.c $(LSRC)/parser/tokenize_utils_2.c $(LSRC)/execution/utils.c $(LSRC)/parser/command.c $(LSRC)/execution/executor.c $(LSRC)/execution/pipes.c $(LSRC)/built-ins/builtin_parser.c $(LSRC)/built-ins/export.c $(LSRC)/built-ins/unset.c $(LSRC)/built-ins/ch_dir.c $(LSRC)/built-ins/pwd.c $(LSRC)/built-ins/echo.c $(LSRC)/built-ins/exit.c $(LSRC)/execution/heredoc.c $(LSRC)/test/print.c $(LSRC)/signals/signals.c $(LSRC)/signals/signals_utils.c
+SRCS = $(LSRC)/parser/env.c $(LSRC)/parser/expansion.c $(LSRC)/parser/expansion_utils.c $(LSRC)/execution/main.c $(LSRC)/syntax_manager/syntax.c $(LSRC)/parser/tokenize.c $(LSRC)/parser/tokenize_utils_1.c $(LSRC)/parser/tokenize_utils_2.c $(LSRC)/execution/utils.c $(LSRC)/parser/command_tokens.c $(LSRC)/parser/command_init.c $(LSRC)/parser/command_exec.c $(LSRC)/parser/command_free.c $(LSRC)/execution/executor.c $(LSRC)/execution/pipes.c $(LSRC)/built-ins/builtin_parser.c $(LSRC)/built-ins/export.c $(LSRC)/built-ins/export_utils.c $(LSRC)/built-ins/unset.c $(LSRC)/built-ins/ch_dir.c $(LSRC)/built-ins/pwd.c $(LSRC)/built-ins/echo.c $(LSRC)/built-ins/exit.c $(LSRC)/execution/heredoc.c $(LSRC)/test/print_commands.c $(LSRC)/test/print_tokens.c $(LSRC)/signals/signals.c $(LSRC)/signals/signals_utils.c
 OBJS = $(SRCS:.c=.o)
 
 CFLAGS = -Wall -Wextra -Werror -I$(LSRC) -I$(INCLUDE) -I/usr/include

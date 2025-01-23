@@ -1,120 +1,78 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eriviere <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/23 13:47:47 by eriviere          #+#    #+#             */
+/*   Updated: 2025/01/23 14:12:20 by eriviere         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static int is_valid_key(char c)
+char	*extract_key(char *arg)
 {
-    return (ft_isalpha(c) || c == '_');
+	int	j;
+
+	j = 0;
+	while (arg[j] && arg[j] != '=')
+		j++;
+	return (ft_strndup(arg, j));
 }
 
-t_env *get_var(t_env **env, char *key)
+char	*extract_value(char *arg)
 {
-    t_env   *curr_node;
+	char	*equal_sign;
 
-    curr_node = *env;
-    while (curr_node)
-    {
-        if (ft_strncmp(key, curr_node->key, -1) == 0)
-            return (curr_node);
-        else
-            curr_node = curr_node->next;
-    }
-    return (NULL);
+	equal_sign = ft_strchr(arg, '=');
+	if (equal_sign && equal_sign[1])
+		return (ft_strdup(equal_sign + 1));
+	return (ft_strdup(""));
 }
 
-void add_env_variable_with_null(t_env **env_list, char *key)
+void	process_argument(char *arg, t_env **env)
 {
-    t_env   *new_node;
-    
-    new_node = malloc(sizeof(t_env));
-    if (!new_node)
-    {
-        free_env_list(*env_list);
-        perror("malloc error creating env node\n");
-        return ;
-    }
-    new_node->key = ft_strdup(key);
-    if (!new_node->key)
-    {
-        free(new_node);
-        perror("malloc error for env key\n");
-        return ;
-    }
-    new_node->value = NULL;
-    new_node->next = *env_list;
-    *env_list = new_node;
+	char	*key;
+	char	*value;
+	t_env	*curr_node;
+
+	key = extract_key(arg);
+	if (!key)
+		return ;
+	if (ft_strchr(arg, '='))
+	{
+		value = extract_value(arg);
+		cu_env_var(env, key, value);
+		free(value);
+	}
+	else
+	{
+		curr_node = get_var(env, key);
+		if (!curr_node)
+			cu_env_var(env, key, NULL);
+	}
+	free(key);
 }
 
-
-void    cu_env_var(t_env **env, char *key, char *value)
+void	export_new_var(t_command **cmd, t_env **env)
 {
-    t_env *curr_node;
+	int		i;
+	char	*val;
 
-    curr_node = get_var(env, key);
-    if (curr_node)
-    {
-        if (curr_node->value)
-            free(curr_node->value);
-        if (value)
-        {
-            curr_node->value = ft_strdup(value);
-        }
-        else
-            curr_node->value = NULL;
-    }
-    else
-    {
-        if (value)
-            add_env_variable(env, key, value);
-        else
-            add_env_variable_with_null(env, key);
-    }
-}
-
-void export_new_var(t_command **cmd, t_env **env)
-{
-    int i;
-    int start;
-    int j;
-    int end;
-    char *key;
-    char *value;
-    t_env *curr_node;
-
-    i = 0;
-    end = 0;
-    while ((*cmd)->args[i])
-    {
-        j = 0;
-        if (is_valid_key((*cmd)->args[i][j]))
-        {
-            start = j;
-            while (((*cmd)->args[i][j] != '=') && (*cmd)->args[i][j] != '\0')
-                j++;
-            end = j;
-            key = ft_strndup(&(*cmd)->args[i][start], (end - start));
-            if ((*cmd)->args[i][j] == '=')
-            {
-                if ((*cmd)->args[i][j + 1] != '\0')
-                {
-                    value = ft_strdup(&(*cmd)->args[i][j + 1]);
-                    cu_env_var(env, key, value);
-                    free(value);
-                }
-                else
-                    cu_env_var(env, key, "");
-            }
-            else
-            {
-                if (!(curr_node = get_var(env, key)))
-                    cu_env_var(env, key, NULL);
-            }
-            free(key);
-        }
-        else
-        {
-            ft_putstr_fd("minishell: export: not a valid identifier\n", 2);
-            char  *val = ft_itoa(get_status(1, EXIT_FAILURE));
-            cu_env_var(env, "?", val);
-        }
-        i++; 
-    } 
+	i = 0;
+	while ((*cmd)->args[i])
+	{
+		if (is_valid_key((*cmd)->args[i][0]))
+			process_argument((*cmd)->args[i], env);
+		else
+		{
+			ft_putstr_fd("minishell: export: not a valid identifier\n", 2);
+			val = ft_itoa(get_status(1, EXIT_FAILURE));
+			cu_env_var(env, "?", val);
+			free(val);
+		}
+		i++;
+	}
 }

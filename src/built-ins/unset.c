@@ -1,33 +1,55 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eriviere <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/23 15:22:52 by eriviere          #+#    #+#             */
+/*   Updated: 2025/01/23 15:29:42 by eriviere         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void delete_env_var(t_command **cmd, t_env **env)
+static void	remove_env_node(t_env **env, t_env *prev, t_env *curr)
 {
-    int i;
-    t_env *curr_node;
-    t_env *temp;
+	if (prev == NULL)
+		*env = curr->next;
+	else
+		prev->next = curr->next;
+	free(curr->key);
+	free(curr->value);
+	free(curr);
+}
 
-    i = 0;
-    while ((*cmd)->args[i])
-    {
-        curr_node = *env;
-        temp = NULL;
-        while (curr_node)
-        {
-            if (ft_strncmp((*cmd)->args[i], curr_node->key, ft_strlen((*cmd)->args[i])) == 0 &&
-                ft_strlen((*cmd)->args[i]) == ft_strlen(curr_node->key))
-            {
-                if (temp == NULL)// Caso especial: eliminar la cabeza de la lista
-                    *env = curr_node->next;
-                else
-                    temp->next = curr_node->next;
-                free(curr_node->key);// Liberar el nodo y su contenido
-                free(curr_node->value);
-                free(curr_node);
-                break; // Salir del bucle interno
-            }
-            temp = curr_node;
-            curr_node = curr_node->next;
-        }
-        i++;
-    }
+static void	delete_env_key(t_env **env, char *key)
+{
+	t_env	*curr;
+	t_env	*prev;
+
+	curr = *env;
+	prev = NULL;
+	while (curr)
+	{
+		if (ft_strncmp(key, curr->key, -1) == 0)
+		{
+			remove_env_node(env, prev, curr);
+			return ;
+		}
+		prev = curr;
+		curr = curr->next;
+	}
+}
+
+void	delete_env_var(t_command **cmd, t_env **env)
+{
+	int	i;
+
+	i = 0;
+	while ((*cmd)->args[i])
+	{
+		delete_env_key(env, (*cmd)->args[i]);
+		i++;
+	}
 }
