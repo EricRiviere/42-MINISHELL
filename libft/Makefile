@@ -39,8 +39,6 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	@$(AR) $(ARFLAGS) $(NAME) $(OBJS)
-	@echo "\n $(CIAN) ===== Project $(NAME) compiled! ===== $(END)\n"
-
 
 %.o: %.c libft.h Makefile
 	@$(CC) $(CFLAGS) -c $< -o $@
