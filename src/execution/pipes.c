@@ -77,6 +77,16 @@ void	parent_process(t_pipe_data *p_data, t_command **cmds, t_env **env,
 	free (val);
 }
 
+int	check_single_builtin(t_command **cmds, t_env **env, t_pipe_data *p_data)
+{
+	if (p_data->cmd_num == 1 && is_unique_builtin(cmds[0]))
+	{
+		execute_cmd(&cmds[0], env);
+		return (1);
+	}
+	return (0);
+}
+
 void	execute_pipes(t_command **cmds, t_env **env)
 {
 	t_pipe_data	p_data;
@@ -86,11 +96,8 @@ void	execute_pipes(t_command **cmds, t_env **env)
 	p_data.prev_fd = -1;
 	if (p_data.cmd_num <= 0 || cmds == NULL)
 		return ;
-	if (p_data.cmd_num == 1 && is_unique_builtin(cmds[0]))
-	{
-		execute_cmd(&cmds[0], env);
+	if (check_single_builtin(cmds, env, &p_data))
 		return ;
-	}
 	i = 0;
 	while (i < p_data.cmd_num)
 	{
@@ -106,30 +113,3 @@ void	execute_pipes(t_command **cmds, t_env **env)
 		i++;
 	}
 }
-
-// void	execute_pipes(t_command **cmds, t_env **env)
-// {
-// 	t_pipe_data	p_data;
-
-// 	p_data.cmd_num = get_cmd_num(cmds);
-// 	p_data.prev_fd = -1;
-// 	if (p_data.cmd_num <= 0 || cmds == NULL)
-// 		return ;
-// 	if (p_data.cmd_num == 1 && is_unique_builtin(cmds[0]))
-// 	{
-// 		execute_cmd(&cmds[0], env);
-// 		return ;
-// 	}
-// 	while (p_data.cmd_num--)
-// 	{
-// 		if (p_data.cmd_num && pipe(p_data.pipe_fd) == -1)
-// 			exit(EXIT_FAILURE);
-// 		p_data.pid = fork();
-// 		if (p_data.pid == -1)
-// 			exit(EXIT_FAILURE);
-// 		if (p_data.pid == 0)
-// 			child_process(cmds, env, &p_data, p_data.cmd_num);
-// 		else
-// 			parent_process(&p_data, cmds, env, p_data.cmd_num);
-// 	}
-// }
