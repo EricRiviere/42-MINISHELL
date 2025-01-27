@@ -12,6 +12,13 @@
 
 #include "minishell.h"
 
+void	handle_line_too_long(char *line)
+{
+	ft_putendl_fd("Error: Line too long to execute",
+		STDERR_FILENO);
+	free(line);
+}
+
 void	process_tok(t_token **tkn_lst, t_env **env_lst)
 {
 	t_token	*curr_tkn;
@@ -24,6 +31,7 @@ void	process_tok(t_token **tkn_lst, t_env **env_lst)
 		expand_variables(curr_tkn, env_lst);
 		curr_tkn = curr_tkn->next;
 	}
+	get_break_it(1, 0);
 	preprocess_tokens(tkn_lst);
 	if (!get_status(0, 0))
 		cu_env_var(env_lst, "?", 0);
@@ -40,6 +48,8 @@ void	process_line(char *line, t_env **env_lst)
 	{
 		process_tok(&tkn_lst, env_lst);
 		cmd_list = commands(tkn_lst);
+		//print_commands(line, cmd_list);
+		//print_tokens(line, tkn_lst);
 		execute_pipes(cmd_list, env_lst);
 		free_cmd_list(cmd_list);
 	}
@@ -62,6 +72,8 @@ int	main(int argc, char **argv, char **env)
 		line = readline("minishell> ");
 		if (!line)
 			break ;
+		if ((int)ft_strlen(line) >= 1000)
+			handle_line_too_long(line);
 		if (*line)
 			process_line(line, &env_lst);
 		free(line);

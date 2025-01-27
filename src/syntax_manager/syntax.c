@@ -24,13 +24,15 @@ int	syntax_check(t_token *tkn_lst)
 			if (current->value[0] == '|')
 			{
 				if (!current->next || current == tkn_lst)
-					return (ft_putstr_fd("Syntax err: invalid pipe\n", 2), 0);
+					return (get_status(1, 2),
+						ft_putstr_fd("Syntax err: invalid pipe\n", 2), 0);
 			}
 			else if (current->value[0] == '>' || current->value[0] == '<')
 			{
 				if (!current->next || !(current->next->type == WORD
 						|| current->next->type == QUOTED))
-					return (ft_putstr_fd("Syntax error: invalid red\n", 2), 0);
+					return (get_status(1, 2),
+						ft_putstr_fd("Syntax error: invalid red\n", 2), 0);
 			}
 		}
 		current = current->next;

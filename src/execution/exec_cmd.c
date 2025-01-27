@@ -19,7 +19,7 @@ int	get_cmd_num(t_command **cmd)
 
 	num = 0;
 	idx = 0;
-	if (cmd == NULL)
+	if (cmd == NULL || *cmd == NULL)
 		return (num);
 	if ((*cmd)->cmd == NULL)
 		return (num);

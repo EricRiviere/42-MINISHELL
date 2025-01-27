@@ -22,11 +22,11 @@ t_command	*allocate_command_resources(void)
 	cmd->redirections = malloc(sizeof(t_redir));
 	if (!cmd->redirections)
 		return (free(cmd), NULL);
-	cmd->args = malloc(sizeof(char *) * 100);
+	cmd->args = malloc(sizeof(char *) * 10000);
 	if (!cmd->args)
 		return (free(cmd->redirections), free(cmd), NULL);
-	cmd->redirections->operator = malloc(sizeof(char *) * 50);
-	cmd->redirections->file = malloc(sizeof(char *) * 50);
+	cmd->redirections->operator = malloc(sizeof(char *) * 500);
+	cmd->redirections->file = malloc(sizeof(char *) * 500);
 	if (!cmd->redirections->operator || !cmd->redirections->file)
 		return (free_command_resources(cmd), NULL);
 	return (cmd);

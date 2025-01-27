@@ -25,6 +25,7 @@ t_token	*manage_quote(t_args *args, int start)
 	{
 		perror("unclosed quote error\n");
 		free_tkn_lst(*args->tkn_lst);
+		get_status(1, 2);
 		return (NULL);
 	}
 	end = (*args->i)++;

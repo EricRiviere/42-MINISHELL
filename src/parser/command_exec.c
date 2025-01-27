@@ -63,7 +63,7 @@ t_command	**commands(t_token *tkn_lst)
 	int			cmd_index;
 
 	curr_tkn = tkn_lst;
-	cmd_list = malloc(sizeof(t_command *) * 100);
+	cmd_list = malloc(sizeof(t_command *) * 1000);
 	if (!cmd_list)
 		return (NULL);
 	cmd_index = 0;
