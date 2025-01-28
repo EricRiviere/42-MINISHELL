@@ -12,6 +12,15 @@
 
 #include "minishell.h"
 
+int get_status_prev(int flag, int value)
+{
+	static int status;
+
+	if (flag)
+		status = value;
+	return  status;
+}
+
 void	handle_line_too_long(char *line)
 {
 	ft_putendl_fd("Error: Line too long to execute",
@@ -47,9 +56,12 @@ void	process_line(char *line, t_env **env_lst)
 	if (!tkn_lst || syntax_check(tkn_lst))
 	{
 		process_tok(&tkn_lst, env_lst);
+		if (get_status(0, 0) == 130)
+		{
+			free_tkn_lst(tkn_lst);
+			return ;
+		}
 		cmd_list = commands(tkn_lst);
-		//print_commands(line, cmd_list);
-		//print_tokens(line, tkn_lst);
 		execute_pipes(cmd_list, env_lst);
 		free_cmd_list(cmd_list);
 	}
@@ -77,6 +89,11 @@ int	main(int argc, char **argv, char **env)
 		if (*line)
 			process_line(line, &env_lst);
 		free(line);
+		if (get_status(0, 0))
+		{
+			get_status_prev(1, get_status(0, 0));
+			get_status(1, 0);
+		}
 	}
 	free_env_list(env_lst);
 	return (0);

@@ -14,10 +14,16 @@
 
 static void	expand_exit_status(t_expand_args *args)
 {
+	int tmp;
+
+	tmp = get_status(0, 0);
 	args->i++;
-	args->temp = ft_itoa(get_status(0, 100));
+	if (get_status_prev(0, 0))
+		tmp = get_status_prev(0, 0);
+	args->temp = ft_itoa(tmp);
 	args->expand = ft_strjoin_free(args->expand, args->temp);
 	free(args->temp);
+	get_status_prev(1, 0);
 }
 
 static void	expand_single_dollar(t_expand_args *args)
