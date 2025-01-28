@@ -6,19 +6,19 @@
 /*   By: gualvare <gualvare@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 18:17:42 by gualvare          #+#    #+#             */
-/*   Updated: 2025/01/22 18:18:08 by gualvare         ###   ########.fr       */
+/*   Updated: 2025/01/28 17:43:21 by eriviere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int get_status_prev(int flag, int value)
+int	get_status_prev(int flag, int value)
 {
-	static int status;
+	static int	status;
 
 	if (flag)
 		status = value;
-	return  status;
+	return  (status);
 }
 
 void	handle_line_too_long(char *line)
@@ -90,10 +90,7 @@ int	main(int argc, char **argv, char **env)
 			process_line(line, &env_lst);
 		free(line);
 		if (get_status(0, 0))
-		{
-			get_status_prev(1, get_status(0, 0));
-			get_status(1, 0);
-		}
+			reset_status();
 	}
 	free_env_list(env_lst);
 	return (0);

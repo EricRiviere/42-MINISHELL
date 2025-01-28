@@ -32,6 +32,7 @@ int	process_output_fd(t_command *cmd, const char *file)
 	int	fd;
 
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
 	{
 		get_status(1, EXIT_FAILURE);
 		return (perror(file), -1);
@@ -44,8 +45,8 @@ int	process_output_fd(t_command *cmd, const char *file)
 int	process_append_fd(t_command *cmd, const char *file)
 {
 	int	fd;
-
 	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (fd == -1)
 	{
 		get_status(1, EXIT_FAILURE);
 		return (perror(file), -1);

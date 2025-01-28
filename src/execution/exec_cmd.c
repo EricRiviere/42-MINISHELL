@@ -12,6 +12,12 @@
 
 #include "minishell.h"
 
+void	reset_status(void)
+{
+	get_status_prev(1, get_status(0, 0));
+	get_status(1, 0);
+}
+
 int	get_cmd_num(t_command **cmd)
 {
 	int	num;

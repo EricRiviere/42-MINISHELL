@@ -230,6 +230,6 @@ t_operator	get_operator_type(const char *line, int i);
 t_command	*allocate_command_resources(void);
 t_command	*init_command(void);
 t_command	**commands(t_token *tkn_lst);
-
+void		reset_status(void);
 int			get_status_prev(int flag, int value);
 #endif

@@ -6,7 +6,7 @@
 /*   By: eriviere <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:28:14 by eriviere          #+#    #+#             */
-/*   Updated: 2025/01/23 11:28:17 by eriviere         ###   ########.fr       */
+/*   Updated: 2025/01/28 17:42:38 by eriviere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	expand_exit_status(t_expand_args *args)
 {
-	int tmp;
+	int	tmp;
 
 	tmp = get_status(0, 0);
 	args->i++;

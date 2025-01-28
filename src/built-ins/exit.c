@@ -38,12 +38,14 @@ void	ft_exit(t_command *cmd)
 	if (cmd->args[1])
 	{
 		ft_putstr_fd("exit: too many arguments\n", 2);
+		get_status(1, 1);
 		return ;
 	}
 	if (!is_numeric_arg(cmd->args[0]))
 	{
 		ft_putstr_fd("exit: numeric argument required\n", 2);
-		exit(2);
+		get_status(1, 2);
+		return ;
 	}
 	exit_code = ft_atoi(cmd->args[0]);
 	exit_code %= 256;
