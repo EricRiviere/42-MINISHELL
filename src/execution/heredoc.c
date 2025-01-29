@@ -14,13 +14,13 @@
 
 static int	handle_pipe_error(void)
 {
-	perror("pipe");
+	ft_putstr_fd("pipe", 2);
 	return (-1);
 }
 
 static int	handle_fork_error(int *redir)
 {
-	perror("fork");
+	ft_putstr_fd("fork", 2);
 	close(redir[0]);
 	close(redir[1]);
 	return (-1);
@@ -56,7 +56,7 @@ static int	handle_parent_process(int *redir, int heredoc)
 	close(redir[1]);
 	if (waitpid(heredoc, &status, 0) == -1)
 	{
-		perror("waitpid");
+		ft_putstr_fd("waitpid", 2);
 		close(redir[0]);
 		return (-1);
 	}

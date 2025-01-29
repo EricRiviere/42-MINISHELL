@@ -40,14 +40,14 @@ void	add_env_variable_with_null(t_env **env_list, char *key)
 	if (!new_node)
 	{
 		free_env_list(*env_list);
-		perror("malloc error creating env node\n");
+		ft_putstr_fd("malloc error creating env node\n", 2);
 		return ;
 	}
 	new_node->key = ft_strdup(key);
 	if (!new_node->key)
 	{
 		free(new_node);
-		perror("malloc error for env key\n");
+		ft_putstr_fd("malloc error for env key\n", 2);
 		return ;
 	}
 	new_node->value = NULL;

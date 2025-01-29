@@ -66,17 +66,17 @@ char	**create_env_array(t_env *env_list, int list_len)
 
 	arr = malloc(sizeof(char *) * (list_len + 1));
 	if (!arr)
-		return (perror("malloc error"), NULL);
+		return (ft_putstr_fd("malloc error", 2), NULL);
 	i = 0;
 	while (env_list)
 	{
 		temp = ft_strjoin(env_list->key, "=");
 		if (!temp)
-			return (perror("malloc error"), free(arr), NULL);
+			return (ft_putstr_fd("malloc error", 2), free(arr), NULL);
 		var = ft_strjoin(temp, env_list->value);
 		free(temp);
 		if (!var)
-			return (perror("malloc error"), free(arr), NULL);
+			return (ft_putstr_fd("malloc error", 2), free(arr), NULL);
 		arr[i++] = var;
 		env_list = env_list->next;
 	}

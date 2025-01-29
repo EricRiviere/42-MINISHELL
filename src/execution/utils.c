@@ -14,7 +14,7 @@
 
 char	*return_error(char *str)
 {
-	perror(str);
+	ft_putstr_fd(str, 2);
 	return (NULL);
 }
 

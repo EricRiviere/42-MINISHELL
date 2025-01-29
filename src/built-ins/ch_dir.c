@@ -80,7 +80,7 @@ void	change_dir(t_command *cmd, t_env **env)
 	old_pwd = getcwd(NULL, 0);
 	if (chdir(target_dir) == -1)
 	{
-		perror("minishell: cd");
+		ft_putstr_fd("minishell: cd", 2);
 		free(old_pwd);
 		update_exit_status(env, EXIT_FAILURE);
 		return ;
