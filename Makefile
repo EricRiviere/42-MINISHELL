@@ -9,7 +9,6 @@
 #    Updated: 2025/01/23 17:55:30 by eriviere         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
 NAME = minishell
 
 # Directorios
@@ -17,6 +16,7 @@ LSRC = ./src
 INCLUDE = .
 OBJDIR = ./obj
 LIBFT_DIR = libft
+HEADERS = $(INCLUDE)/minishell.h
 
 END = \033[0m
 GREEN = \033[32m
@@ -39,8 +39,8 @@ SRCS = \
     $(LSRC)/parser/command_exec.c \
     $(LSRC)/parser/command_free.c \
     $(LSRC)/execution/exec_arr.c \
-    $(LSRC)/execution/exec_cmd.c \
-    $(LSRC)/execution/exec_path.c \
+	$(LSRC)/execution/exec_cmd.c \
+	$(LSRC)/execution/exec_path.c \
     $(LSRC)/execution/pipes.c \
     $(LSRC)/built-ins/builtin_parser.c \
     $(LSRC)/built-ins/export.c \
@@ -62,11 +62,18 @@ CFLAGS = -Wall -Wextra -Werror -I$(LSRC) -I$(INCLUDE) -I/usr/include
 LDFLAGS = -L/usr/lib
 LDLIBS = -lreadline
 DEBUG = -g -fsanitize=address
-HEADERS = $(INCLUDE)/minishell.h
 
 LIBFT = $(LIBFT_DIR)/libft.a
-LIBFT_SRCS = $(wildcard $(LIBFT_DIR)/*.c)
-LIBFT_HEADER = $(LIBFT_DIR)/libft.h
+LIBFT_SRCS = \
+    libft/ft_atoi.c libft/ft_bzero.c libft/ft_calloc.c libft/ft_isalnum.c \
+    libft/ft_isalpha.c libft/ft_isascii.c libft/ft_isdigit.c libft/ft_isprint.c \
+    libft/ft_itoa.c libft/ft_memchr.c libft/ft_memcmp.c libft/ft_memcpy.c \
+    libft/ft_memmove.c libft/ft_memset.c libft/ft_putchar_fd.c libft/ft_putendl_fd.c \
+    libft/ft_putnbr_fd.c libft/ft_putstr_fd.c libft/ft_split.c libft/ft_strchr.c \
+    libft/ft_strdup.c libft/ft_striteri.c libft/ft_strjoin.c libft/ft_strlcat.c \
+    libft/ft_strlcpy.c libft/ft_strlen.c libft/ft_strmapi.c libft/ft_strncmp.c \
+    libft/ft_strnstr.c libft/ft_strrchr.c libft/ft_strtrim.c libft/ft_substr.c \
+    libft/ft_tolower.c libft/ft_toupper.c
 
 all: $(NAME)
 
@@ -76,7 +83,7 @@ $(NAME): $(OBJS) $(LIBFT) Makefile
 	@echo "$(GREEN)$(NAME) built successfully!$(END)"
 
 # Crear objetos
-$(OBJDIR)/%.o: $(LSRC)/%.c $(HEADERS) | $(OBJDIR)
+$(OBJDIR)/%.o: $(LSRC)/%.c $(HEADERS) Makefile | $(OBJDIR)
 	@$(CC) $(DEBUG) $(CFLAGS) -c $< -o $@
 	@printf "$(YELLOW)Compiling $<... \r$(END)"
 
@@ -85,20 +92,21 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)
 	@mkdir -p $(dir $(OBJS))
 
-$(LIBFT): $(LIBFT_SRCS) $(LIBFT_HEADER)
-	@echo "$(YELLOW)Compiling $<...\r$(END)"
+# Recompilar libft si cambia algún archivo fuente
+$(LIBFT): $(LIBFT_SRCS) $(LIBFT_DIR)/libft.h
 	@make -C $(LIBFT_DIR) --no-print-directory
 
 clean:
-	@echo "$(RED)Cleaning minishell object files...$(END)"
+	@echo "$(RED)Cleaning object files...$(END)"
 	@rm -rf $(OBJDIR)
 	@make -C $(LIBFT_DIR) clean --no-print-directory
 
 fclean: clean
-	@echo "$(RED)Cleaning minishell...$(END)"
+	@echo "$(RED)Cleaning everything...$(END)"
 	@rm -f $(NAME)
 	@make -C $(LIBFT_DIR) fclean --no-print-directory
 
 re: fclean all
 
 .PHONY: all clean fclean re
+
