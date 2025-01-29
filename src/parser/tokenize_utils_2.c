@@ -23,7 +23,7 @@ t_token	*manage_quote(t_args *args, int start)
 		(*args->i)++;
 	if (!args->line[*args->i])
 	{
-		perror("unclosed quote error\n");
+		ft_putstr_fd("unclosed quote error\n", 2);
 		free_tkn_lst(*args->tkn_lst);
 		get_status(1, 2);
 		return (NULL);
