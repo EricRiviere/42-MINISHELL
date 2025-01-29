@@ -6,7 +6,7 @@
 /*   By: eriviere <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:29:30 by eriviere          #+#    #+#             */
-/*   Updated: 2025/01/23 12:29:31 by eriviere         ###   ########.fr       */
+/*   Updated: 2025/01/29 10:32:16 by eriviere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int	process_output_fd(t_command *cmd, const char *file)
 int	process_append_fd(t_command *cmd, const char *file)
 {
 	int	fd;
+
 	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
 	{

@@ -6,7 +6,7 @@
 /*   By: gualvare <gualvare@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 18:17:42 by gualvare          #+#    #+#             */
-/*   Updated: 2025/01/28 17:43:21 by eriviere         ###   ########.fr       */
+/*   Updated: 2025/01/29 10:31:18 by eriviere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	get_status_prev(int flag, int value)
 
 	if (flag)
 		status = value;
-	return  (status);
+	return (status);
 }
 
 void	handle_line_too_long(char *line)
